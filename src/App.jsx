@@ -1,0 +1,1228 @@
+import { useState, useEffect, useRef, useCallback } from "react";
+
+const GOLD = "#D4AF37";
+const GOLD2 = "#FFD700";
+const BG = "#0A0A0A";
+const BG2 = "#111111";
+const CARD = "#181818";
+const TEXT = "#FFFFFF";
+const TEXT2 = "#BFBFBF";
+
+const css = `
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Roboto+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
+body{background:#0A0A0A;color:#fff;font-family:'Roboto',sans-serif;width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0;text-align:left}
+#root{width:100%;max-width:100%;margin:0;padding:0;overflow-x:hidden}
+img,video,svg{max-width:100%;height:auto}
+section{width:100%;overflow:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#111}
+::-webkit-scrollbar-thumb{background:linear-gradient(#D4AF37,#FFD700);border-radius:2px}
+.serif{font-family:'Roboto',sans-serif;font-weight:300}
+.mono{font-family:'Roboto Mono',monospace}
+.gold{color:#D4AF37}
+.gold2{color:#FFD700}
+.btn-gold{background:linear-gradient(135deg,#D4AF37,#FFD700);color:#0A0A0A;font-weight:600;border:none;cursor:pointer;transition:all .3s;font-family:'Roboto',sans-serif;letter-spacing:.04em}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(212,175,55,.4)}
+.btn-outline{background:transparent;color:#D4AF37;border:1px solid #D4AF37;cursor:pointer;transition:all .3s;font-family:'Roboto',sans-serif}
+.btn-outline:hover{background:rgba(212,175,55,.1);transform:translateY(-2px)}
+.card{background:#181818;border:1px solid rgba(212,175,55,.12);transition:all .4s}
+.card:hover{border-color:rgba(212,175,55,.35);transform:translateY(-4px);box-shadow:0 20px 60px rgba(212,175,55,.08)}
+.section-title{font-family:'Roboto',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:300;letter-spacing:-.02em}
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+.stagger-1{transition-delay:.1s}
+.stagger-2{transition-delay:.2s}
+.stagger-3{transition-delay:.3s}
+.stagger-4{transition-delay:.4s}
+.nav-link{color:#BFBFBF;text-decoration:none;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;transition:color .3s;position:relative}
+.nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:#D4AF37;transition:width .3s}
+.nav-link:hover{color:#D4AF37}
+.nav-link:hover::after,.nav-link.active::after{width:100%}
+.nav-link.active{color:#D4AF37}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:#111;border:1px solid rgba(212,175,55,.25);border-radius:16px;padding:2rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;position:relative}
+.modal::-webkit-scrollbar{width:3px}
+.modal::-webkit-scrollbar-thumb{background:#D4AF37}
+.input-field{background:#0A0A0A;border:1px solid rgba(212,175,55,.2);border-radius:8px;color:#fff;padding:.75rem 1rem;width:100%;font-family:'Roboto',sans-serif;font-size:.9rem;transition:border-color .3s;outline:none}
+.input-field:focus{border-color:#D4AF37}
+.input-field::placeholder{color:#555}
+.tag{display:inline-flex;align-items:center;gap:4px;background:rgba(212,175,55,.1);color:#D4AF37;border:1px solid rgba(212,175,55,.2);padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;letter-spacing:.03em}
+.skill-bar{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.skill-bar-fill{height:100%;background:linear-gradient(90deg,#D4AF37,#FFD700);border-radius:2px;transition:width 1.5s cubic-bezier(.4,0,.2,1)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes pulse-gold{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
+@keyframes typing{from{width:0}to{width:100%}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes count-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.typewriter{overflow:hidden;white-space:nowrap;border-right:2px solid #D4AF37;animation:typing 2s steps(30,end) forwards,blink .8s infinite}
+.hero-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:pulse-gold 4s ease-in-out infinite}
+.timeline-line{position:absolute;left:50%;transform:translateX(-50%);top:0;bottom:0;width:1px;background:linear-gradient(#D4AF37 0%,transparent 100%)}
+.admin-pill{position:fixed;bottom:2rem;right:2rem;z-index:500;background:rgba(17,17,17,.95);border:1px solid rgba(212,175,55,.3);border-radius:50px;padding:.5rem 1.2rem;cursor:pointer;transition:all .3s;font-size:.8rem;color:#D4AF37;letter-spacing:.06em}
+.admin-pill:hover{border-color:#D4AF37;box-shadow:0 4px 20px rgba(212,175,55,.2)}
+.status-badge{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}
+.split-2{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:4rem;align-items:center}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.project-img{width:100%;height:180px;object-fit:cover;border-radius:10px 10px 0 0}
+.cert-img{width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:1rem}
+select.input-field option{background:#111}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 0;transition:all .4s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom-color:rgba(212,175,55,.1)}
+.section-pad{padding:6rem 2rem}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.nav-links-desktop{display:flex;gap:2.5rem;align-items:center}
+.nav-resume{display:inline-block}
+.nav-burger{display:none;background:none;border:none;color:#D4AF37;cursor:pointer;font-size:1.6rem;line-height:1;padding:0;width:40px;height:40px}
+.mobile-menu{display:none;flex-direction:column;gap:.25rem;background:rgba(10,10,10,.98);backdrop-filter:blur(20px);border-top:1px solid rgba(212,175,55,.12);padding:1rem 1.5rem;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease}
+.mobile-menu.open{max-height:520px;padding:1.25rem 1.5rem}
+.mobile-link{color:#BFBFBF;text-decoration:none;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.05);transition:color .3s}
+.mobile-link:hover,.mobile-link.active{color:#D4AF37}
+.hero-ring{width:clamp(200px,28vw,260px);height:clamp(200px,28vw,260px)}
+.hero-ring-inner{width:92%;height:92%}
+.hero-avatar-wrap{display:flex;justify-content:center}
+@media(max-width:1024px){.hero-grid{gap:2rem}}
+@media(max-width:900px){
+  .split-2{grid-template-columns:1fr;gap:2.5rem}
+  .hero-grid{grid-template-columns:1fr;gap:3rem;text-align:center}
+  .hero-grid .hero-btns,.hero-grid .hero-social{justify-content:center}
+}
+@media(max-width:768px){
+  .nav-links-desktop{display:none}
+  .nav-resume{display:none}
+  .nav-burger{display:block}
+  .mobile-menu{display:flex}
+  .nav-inner{padding:0 1.25rem}
+  .timeline-line{left:24px}
+  .section-title{font-size:2rem}
+  .hero-btns{flex-direction:column;align-items:stretch}
+  .hero-btns button{width:100%}
+  .section-pad{padding:4rem 1.25rem}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .section-title{font-size:1.7rem}
+  .section-pad{padding:3rem 1rem}
+  .modal{padding:1.5rem}
+}
+`;
+
+const defaultData = {
+  profile: {
+    name: "Alexander Reid",
+    title: "Software Engineer & AI Researcher",
+    taglines: ["Full Stack Developer", "AI/ML Engineer", "Open Source Contributor", "System Architect", "Problem Solver"],
+    bio: "Passionate software engineer with 5+ years crafting elegant solutions at the intersection of AI, web technologies, and systems architecture. I build products that matter.",
+    location: "San Francisco, CA",
+    email: "alex@alexreid.dev",
+    github: "https://github.com",
+    linkedin: "https://linkedin.com",
+    whatsapp: "https://wa.me/1234567890",
+    resume: "#",
+    about: "I'm a software engineer who believes that great technology is invisible — it just works, beautifully. My journey started at MIT where I fell in love with algorithms and distributed systems, then evolved through roles at leading tech companies where I built products used by millions.\n\nToday, I focus on the convergence of AI and human experience, building systems that learn, adapt, and empower. When I'm not coding, I'm contributing to open source, mentoring junior developers, or exploring the mountains of Northern California."
+  },
+  stats: [
+    { label: "Projects Completed", value: 47, suffix: "+" },
+    { label: "Certificates Earned", value: 23, suffix: "" },
+    { label: "Technologies", value: 38, suffix: "+" },
+    { label: "Years Experience", value: 5, suffix: "+" },
+    { label: "Freelance Projects", value: 14, suffix: "" }
+  ],
+  skills: [
+    { id: 1, name: "Python", category: "Programming", years: 5, level: 92, description: "Expert-level Python for backend systems, ML pipelines, and automation.", techs: ["FastAPI", "Django", "NumPy", "Pandas"] },
+    { id: 2, name: "TypeScript", category: "Web Development", years: 4, level: 88, description: "Modern TypeScript for scalable frontend and Node.js applications.", techs: ["React", "Next.js", "Node.js"] },
+    { id: 3, name: "Machine Learning", category: "AI & Machine Learning", years: 3, level: 82, description: "End-to-end ML systems from data preprocessing to model deployment.", techs: ["PyTorch", "TensorFlow", "Scikit-learn", "HuggingFace"] },
+    { id: 4, name: "AWS", category: "Cloud Computing", years: 4, level: 85, description: "Cloud architecture, serverless computing, and infrastructure as code.", techs: ["EC2", "Lambda", "S3", "ECS", "CDK"] },
+    { id: 5, name: "PostgreSQL", category: "Databases", years: 5, level: 90, description: "Advanced query optimization, schema design, and performance tuning.", techs: ["PostGIS", "pgvector", "TimescaleDB"] },
+    { id: 6, name: "Docker & Kubernetes", category: "DevOps", years: 3, level: 80, description: "Container orchestration, CI/CD pipelines, and microservices.", techs: ["Helm", "ArgoCD", "Prometheus", "Grafana"] },
+    { id: 7, name: "Penetration Testing", category: "Cybersecurity", years: 2, level: 72, description: "Web application security, OWASP top 10, and vulnerability assessment.", techs: ["Burp Suite", "Metasploit", "Nmap", "Wireshark"] },
+    { id: 8, name: "React Native", category: "Mobile Development", years: 3, level: 78, description: "Cross-platform mobile applications with native performance.", techs: ["Expo", "React Navigation", "Redux"] },
+  ],
+  experiences: [
+    { id: 1, position: "Senior Software Engineer", company: "Anthropic", type: "Full Time", start: "2023-01", end: null, description: "Leading development of AI-powered developer tools and safety systems. Architected a high-throughput inference pipeline serving 10M+ requests/day.", technologies: ["Python", "TypeScript", "Kubernetes", "CUDA", "Redis"], achievements: ["Reduced inference latency by 40%", "Led team of 6 engineers", "Open-sourced 3 internal tools"], location: "San Francisco, CA" },
+    { id: 2, position: "ML Engineer", company: "Stripe", type: "Full Time", start: "2021-03", end: "2022-12", description: "Built fraud detection models and risk scoring systems processing $500B+ in annual transaction volume.", technologies: ["Python", "Spark", "Kafka", "PostgreSQL", "AWS"], achievements: ["Improved fraud detection by 23%", "Reduced false positives by 35%", "Filed 2 patents"], location: "San Francisco, CA" },
+    { id: 3, position: "Full Stack Engineer", company: "Vercel", type: "Contract", start: "2020-06", end: "2021-02", description: "Contributed to the Next.js edge runtime and improved developer experience features.", technologies: ["TypeScript", "Rust", "Next.js", "Turborepo"], achievements: ["Shipped Edge Middleware v1", "Improved DX for 500K+ developers"], location: "Remote" },
+  ],
+  education: [
+    { id: 1, degree: "B.S. Computer Science", university: "MIT", faculty: "School of Engineering", department: "EECS", gpa: "3.94", start: "2016", end: "2020", description: "Specialized in Artificial Intelligence and Distributed Systems. Thesis: 'Efficient Training of Large Language Models on Edge Devices'. Dean's List all semesters." },
+  ],
+  projects: [
+    { id: 1, name: "NeuralForge", category: "AI & Machine Learning", description: "Open-source framework for rapid prototyping of neural architectures with automatic differentiation and GPU optimization.", technologies: ["Python", "CUDA", "C++", "PyTorch"], features: ["Auto-differentiation engine", "GPU memory optimization", "Visual architecture builder", "One-click deployment"], status: "Completed", github: "https://github.com", demo: "https://neuralforge.dev", start: "2023-01", end: "2023-08", banner: "" },
+    { id: 2, name: "VaultDB", category: "Databases", description: "Zero-knowledge encrypted database with homomorphic encryption support — query data without ever decrypting it.", technologies: ["Rust", "C", "PostgreSQL", "WebAssembly"], features: ["Homomorphic encryption", "Zero-knowledge proofs", "WASM runtime", "Sub-10ms query latency"], status: "In Progress", github: "https://github.com", demo: "", start: "2023-09", end: null, banner: "" },
+    { id: 3, name: "Meridian", category: "Web Development", description: "Premium design system and component library used by 200+ teams, featuring 120+ accessible components with pixel-perfect design.", technologies: ["TypeScript", "React", "Tailwind", "Storybook", "Figma"], features: ["120+ components", "Dark/light mode", "a11y compliant", "Tree-shakeable"], status: "Completed", github: "https://github.com", demo: "https://meridian.design", start: "2022-03", end: "2022-11", banner: "" },
+  ],
+  certs: [
+    { id: 1, name: "AWS Solutions Architect Professional", issuer: "Amazon Web Services", issued: "2023-03", expiry: "2026-03", credId: "SAP-01234", url: "https://aws.amazon.com", image: "" },
+    { id: 2, name: "CKA: Certified Kubernetes Administrator", issuer: "CNCF", issued: "2022-08", expiry: "2025-08", credId: "CKA-5678", url: "https://cncf.io", image: "" },
+    { id: 3, name: "Google Professional ML Engineer", issuer: "Google Cloud", issued: "2023-06", expiry: "2025-06", credId: "GML-9012", url: "https://cloud.google.com", image: "" },
+  ],
+  achievements: [
+    { id: 1, title: "Best Paper Award – NeurIPS 2023", date: "2023-12", organization: "NeurIPS", description: "Awarded for research on efficient attention mechanisms reducing transformer memory footprint by 60%." },
+    { id: 2, title: "GitHub Arctic Code Vault Contributor", date: "2020-02", organization: "GitHub", description: "Open source contributions preserved in the Arctic Code Vault for 1,000 years." },
+    { id: 3, title: "Hackathon Winner – TechCrunch Disrupt 2022", date: "2022-09", organization: "TechCrunch", description: "1st place among 400+ teams for building an AI-powered accessibility tool in 48 hours." },
+  ],
+  courses: [
+    { id: 1, name: "Deep Learning Specialization", provider: "Coursera / DeepLearning.AI", duration: "5 months", completed: "2021-06", skills: ["CNNs", "RNNs", "Transformers", "NLP"] },
+    { id: 2, name: "Advanced Algorithms", provider: "MIT OpenCourseWare", duration: "3 months", completed: "2020-12", skills: ["Graph Theory", "Dynamic Programming", "Computational Geometry"] },
+  ],
+  freelance: [
+    { id: 1, clientType: "Fintech Startup", name: "Trading Analytics Platform", duration: "6 months", technologies: ["Python", "FastAPI", "React", "PostgreSQL"], description: "Real-time options trading analytics platform with ML-powered signal generation.", deliverables: ["REST API", "Real-time dashboard", "ML models", "Mobile app"], results: "Increased client trading accuracy by 18%. Acquired 5,000 users in first month.", nda: false },
+    { id: 2, clientType: "Healthcare Corp", name: "Medical Image AI System", duration: "4 months", technologies: ["Python", "PyTorch", "DICOM", "Docker"], description: "Computer vision system for automated medical image analysis.", deliverables: ["Trained models", "Inference API", "DICOM integration"], results: "94.2% diagnostic accuracy, reducing radiologist review time by 60%.", nda: true },
+  ]
+};
+
+// ─── Helpers ───────────────────────────────────────────────
+function useInView(threshold = 0.15) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return [ref, visible];
+}
+
+function AnimCounter({ target, suffix = "", duration = 2000 }) {
+  const [count, setCount] = useState(0);
+  const [ref, visible] = useInView();
+  useEffect(() => {
+    if (!visible) return;
+    let start = null;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      setCount(Math.floor(progress * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [visible, target, duration]);
+  return <span ref={ref}>{count}{suffix}</span>;
+}
+
+function FadeIn({ children, delay = 0, className = "" }) {
+  const [ref, visible] = useInView();
+  return (
+    <div ref={ref} className={`fade-in${visible ? " visible" : ""} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+      {children}
+    </div>
+  );
+}
+
+function Modal({ open, onClose, title, children }) {
+  useEffect(() => { document.body.style.overflow = open ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [open]);
+  if (!open) return null;
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal" style={{ animation: "count-up .3s ease" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+          <h3 style={{ fontFamily: "'Roboto',sans-serif", fontWeight: 500, fontSize: "1.3rem", color: GOLD }}>{title}</h3>
+          <button onClick={onClose} aria-label="Close" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(212,175,55,.15)", color: TEXT2, cursor: "pointer", fontSize: "1.1rem", lineHeight: 1, width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>✕</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function FieldRow({ label, children }) {
+  return (
+    <div style={{ marginBottom: "1rem" }}>
+      <label style={{ display: "block", fontSize: ".8rem", color: GOLD, letterSpacing: ".06em", textTransform: "uppercase", marginBottom: ".4rem" }}>{label}</label>
+      {children}
+    </div>
+  );
+}
+
+const catColors = {
+  "Programming": "#D4AF37", "AI & Machine Learning": "#22d3ee", "Web Development": "#a78bfa",
+  "DevOps": "#34d399", "Cloud Computing": "#60a5fa", "Databases": "#f87171",
+  "Cybersecurity": "#fb923c", "Mobile Development": "#c084fc", "Networking": "#4ade80", "Tools": "#94a3b8"
+};
+
+const statusColors = {
+  "Completed": { bg: "rgba(52,211,153,.1)", color: "#34d399", border: "rgba(52,211,153,.3)" },
+  "In Progress": { bg: "rgba(212,175,55,.1)", color: "#D4AF37", border: "rgba(212,175,55,.3)" },
+  "Archived": { bg: "rgba(100,116,139,.1)", color: "#94a3b8", border: "rgba(100,116,139,.3)" }
+};
+
+// ─── Nav ───────────────────────────────────────────────────
+function Nav({ active, onNav }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+  const links = ["Home", "About", "Skills", "Experience", "Projects", "Certs", "Contact"];
+  const go = (l) => { onNav(l.toLowerCase()); setMenuOpen(false); };
+  return (
+    <nav className={`nav${scrolled ? " scrolled" : ""}`}>
+      <div className="nav-inner">
+        <a href="#home" onClick={() => go("Home")} className="serif" style={{ fontSize: "1.5rem", fontWeight: 500, color: GOLD, letterSpacing: ".05em", textDecoration: "none" }}>AR</a>
+        <div className="nav-links-desktop">
+          {links.map(l => <a key={l} href={`#${l.toLowerCase()}`} className={`nav-link${active === l.toLowerCase() ? " active" : ""}`} onClick={() => go(l)}>{l}</a>)}
+        </div>
+        <button className="nav-resume btn-gold" style={{ padding: ".5rem 1.4rem", borderRadius: 50, fontSize: ".8rem" }} onClick={() => window.open("#")}>Resume</button>
+        <button className="nav-burger" aria-label="Menu" onClick={() => setMenuOpen(!menuOpen)}>
+          {menuOpen ? "✕" : "☰"}
+        </button>
+      </div>
+      <div className={`mobile-menu${menuOpen ? " open" : ""}`}>
+        {links.map(l => (
+          <a key={l} href={`#${l.toLowerCase()}`} className={`mobile-link${active === l.toLowerCase() ? " active" : ""}`} onClick={() => go(l)}>{l}</a>
+        ))}
+        <a href="#" className="btn-gold" style={{ padding: ".7rem", borderRadius: 10, textAlign: "center", textDecoration: "none", marginTop: ".5rem" }}>↓ Download Resume</a>
+      </div>
+    </nav>
+  );
+}
+
+// ─── Hero ──────────────────────────────────────────────────
+function Hero({ data }) {
+  const [tagIdx, setTagIdx] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [typing, setTyping] = useState(true);
+  useEffect(() => {
+    const tag = data.taglines[tagIdx];
+    if (typing) {
+      if (displayed.length < tag.length) {
+        const t = setTimeout(() => setDisplayed(tag.slice(0, displayed.length + 1)), 70);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setTyping(false), 1800);
+        return () => clearTimeout(t);
+      }
+    } else {
+      if (displayed.length > 0) {
+        const t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 40);
+        return () => clearTimeout(t);
+      } else {
+        setTagIdx((tagIdx + 1) % data.taglines.length);
+        setTyping(true);
+      }
+    }
+  }, [displayed, typing, tagIdx, data.taglines]);
+
+  return (
+    <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden", padding: "6rem 2rem 4rem" }}>
+      <div className="hero-bg-orb" style={{ width: 500, height: 500, background: "rgba(212,175,55,.06)", top: "-100px", right: "-100px" }} />
+      <div className="hero-bg-orb" style={{ width: 300, height: 300, background: "rgba(212,175,55,.04)", bottom: "100px", left: "-50px", animationDelay: "2s" }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(212,175,55,.04) 1px, transparent 0)", backgroundSize: "40px 40px" }} />
+      <div className="hero-grid" style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+        <div>
+          <FadeIn delay={0}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "rgba(212,175,55,.08)", border: "1px solid rgba(212,175,55,.2)", borderRadius: 50, padding: "6px 16px", marginBottom: "1.5rem" }}>
+              <span style={{ width: 6, height: 6, background: "#34d399", borderRadius: "50%", display: "inline-block", boxShadow: "0 0 8px #34d399" }} />
+              <span style={{ fontSize: ".8rem", color: TEXT2, letterSpacing: ".08em" }}>Available for opportunities</span>
+            </div>
+          </FadeIn>
+          <FadeIn delay={100}>
+            <h1 className="serif" style={{ fontSize: "clamp(3rem,7vw,5.5rem)", fontWeight: 300, lineHeight: 1.1, letterSpacing: "-.02em", marginBottom: ".5rem" }}>
+              {data.name.split(" ")[0]}<br />
+              <span style={{ color: GOLD }}>{data.name.split(" ").slice(1).join(" ")}</span>
+            </h1>
+          </FadeIn>
+          <FadeIn delay={200}>
+            <div style={{ height: "2.5rem", display: "flex", alignItems: "center", gap: "8px", marginBottom: "1.5rem" }}>
+              <span style={{ color: TEXT2, fontSize: "1.1rem" }}>I'm a </span>
+              <span className="mono" style={{ color: GOLD, fontSize: "1.1rem", borderRight: `2px solid ${GOLD}`, paddingRight: "4px", minWidth: "180px" }}>{displayed}</span>
+            </div>
+          </FadeIn>
+          <FadeIn delay={300}>
+            <p style={{ color: TEXT2, fontSize: "1.05rem", lineHeight: 1.7, maxWidth: 520, marginBottom: "2.5rem" }}>{data.bio}</p>
+          </FadeIn>
+          <FadeIn delay={400}>
+            <div className="hero-btns" style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginBottom: "3rem" }}>
+              <button className="btn-gold" style={{ padding: ".85rem 2.2rem", borderRadius: 50, fontSize: ".9rem" }} onClick={() => window.open(data.resume)}>
+                ↓ Download Resume
+              </button>
+              <button className="btn-outline" style={{ padding: ".85rem 2.2rem", borderRadius: 50, fontSize: ".9rem" }} onClick={() => document.getElementById("contact").scrollIntoView({ behavior: "smooth" })}>
+                Get In Touch
+              </button>
+            </div>
+          </FadeIn>
+          <FadeIn delay={500}>
+            <div className="hero-social" style={{ display: "flex", gap: "1rem" }}>
+              {[
+                { icon: "🐱", label: "GitHub", url: data.github },
+                { icon: "💼", label: "LinkedIn", url: data.linkedin },
+                { icon: "✉", label: "Email", url: `mailto:${data.email}` },
+                { icon: "💬", label: "WhatsApp", url: data.whatsapp },
+              ].map(s => (
+                <a key={s.label} href={s.url} target="_blank" rel="noreferrer" style={{ width: 42, height: 42, border: "1px solid rgba(212,175,55,.25)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: TEXT2, textDecoration: "none", transition: "all .3s", fontSize: "1rem" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = GOLD; e.currentTarget.style.color = GOLD; e.currentTarget.style.transform = "translateY(-3px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(212,175,55,.25)"; e.currentTarget.style.color = TEXT2; e.currentTarget.style.transform = ""; }}>
+                  {s.icon}
+                </a>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+        <FadeIn delay={300} className="hero-avatar-wrap">
+          <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div className="hero-ring" style={{ borderRadius: "50%", background: `conic-gradient(${GOLD}, transparent, ${GOLD})`, padding: "2px", animation: "spin 8s linear infinite" }}>
+              <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: BG, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                <div className="hero-ring-inner" style={{ borderRadius: "50%", background: `linear-gradient(135deg, #1a1a2e, #16213e)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span className="serif" style={{ fontSize: "clamp(4rem,12vw,6rem)", lineHeight: 1, color: GOLD, opacity: .7 }}>AR</span>
+                </div>
+              </div>
+            </div>
+            <div style={{ position: "absolute", bottom: -20, right: -20, background: CARD, border: "1px solid rgba(212,175,55,.2)", borderRadius: 12, padding: ".8rem 1.2rem", minWidth: 140 }}>
+              <div style={{ fontSize: ".7rem", color: TEXT2, marginBottom: ".3rem" }}>Open to Work</div>
+              <div className="mono" style={{ fontSize: ".85rem", color: GOLD }}>Full-time / Contract</div>
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+// ─── Stats ─────────────────────────────────────────────────
+function Stats({ data }) {
+  return (
+    <section style={{ padding: "4rem 2rem", borderTop: "1px solid rgba(212,175,55,.08)", borderBottom: "1px solid rgba(212,175,55,.08)" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))", gap: "2rem" }}>
+        {data.map((s, i) => (
+          <FadeIn key={i} delay={i * 100}>
+            <div style={{ textAlign: "center" }}>
+              <div className="serif" style={{ fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 300, color: GOLD, lineHeight: 1 }}>
+                <AnimCounter target={s.value} suffix={s.suffix} />
+              </div>
+              <div style={{ fontSize: ".8rem", color: TEXT2, marginTop: ".5rem", letterSpacing: ".06em", textTransform: "uppercase" }}>{s.label}</div>
+            </div>
+          </FadeIn>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ─── About ─────────────────────────────────────────────────
+function About({ profile }) {
+  return (
+    <section id="about" style={{ padding: "6rem 2rem" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ marginBottom: "3rem" }}>
+          <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 001</p>
+          <h2 className="section-title">About <span style={{ color: GOLD }}>Me</span></h2>
+        </div></FadeIn>
+        <div className="split-2">
+          <FadeIn delay={100}>
+            <div style={{ whiteSpace: "pre-line", color: TEXT2, lineHeight: 1.8, fontSize: "1rem" }}>{profile.about}</div>
+            <div style={{ display: "flex", gap: "1rem", marginTop: "2rem", flexWrap: "wrap" }}>
+              <a href={`mailto:${profile.email}`} className="btn-outline" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem", textDecoration: "none", display: "inline-block" }}>✉ Email Me</a>
+              <a href={profile.github} target="_blank" rel="noreferrer" className="btn-outline" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem", textDecoration: "none", display: "inline-block" }}>GitHub</a>
+            </div>
+          </FadeIn>
+          <FadeIn delay={200}>
+            <div style={{ display: "grid", gap: "1rem" }}>
+              {[
+                { label: "Location", value: profile.location },
+                { label: "Email", value: profile.email },
+                { label: "Focus", value: "AI Systems & Full Stack" },
+                { label: "Status", value: "Open to opportunities" },
+                { label: "Languages", value: "English, Python, JavaScript" },
+              ].map(item => (
+                <div key={item.label} style={{ display: "flex", gap: "1rem", padding: "1rem 1.2rem", background: CARD, border: "1px solid rgba(212,175,55,.1)", borderRadius: 10 }}>
+                  <span style={{ color: GOLD, fontSize: ".8rem", textTransform: "uppercase", letterSpacing: ".06em", minWidth: 80 }}>{item.label}</span>
+                  <span style={{ color: TEXT, fontSize: ".9rem" }}>{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Skills ────────────────────────────────────────────────
+function Skills({ skills, isAdmin, onAdd, onEdit, onDelete }) {
+  const cats = [...new Set(skills.map(s => s.category))];
+  const [active, setActive] = useState("All");
+  const filtered = active === "All" ? skills : skills.filter(s => s.category === active);
+  const [ref, visible] = useInView();
+
+  return (
+    <section id="skills" style={{ padding: "6rem 2rem", background: BG2 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 002</p>
+            <h2 className="section-title">Technical <span style={{ color: GOLD }}>Skills</span></h2>
+          </div>
+          {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Skill</button>}
+        </div></FadeIn>
+        <FadeIn>
+          <div style={{ display: "flex", gap: ".5rem", flexWrap: "wrap", marginBottom: "2.5rem" }}>
+            {["All", ...cats].map(c => (
+              <button key={c} onClick={() => setActive(c)} style={{ padding: ".4rem 1rem", borderRadius: 20, fontSize: ".8rem", border: `1px solid ${active === c ? GOLD : "rgba(212,175,55,.2)"}`, background: active === c ? "rgba(212,175,55,.1)" : "transparent", color: active === c ? GOLD : TEXT2, cursor: "pointer", transition: "all .3s" }}>{c}</button>
+            ))}
+          </div>
+        </FadeIn>
+        <div ref={ref} className="grid-2">
+          {filtered.map((sk, i) => (
+            <FadeIn key={sk.id} delay={i * 60}>
+              <div className="card" style={{ borderRadius: 12, padding: "1.5rem", position: "relative" }}>
+                {isAdmin && (
+                  <div style={{ position: "absolute", top: "1rem", right: "1rem", display: "flex", gap: ".5rem" }}>
+                    <button onClick={() => onEdit(sk)} style={{ background: "rgba(212,175,55,.1)", border: "none", color: GOLD, cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".75rem" }}>Edit</button>
+                    <button onClick={() => onDelete(sk.id)} style={{ background: "rgba(239,68,68,.1)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".75rem" }}>Del</button>
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
+                  <div>
+                    <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: ".3rem" }}>{sk.name}</h3>
+                    <span style={{ fontSize: ".75rem", color: catColors[sk.category] || GOLD }}>{sk.category} · {sk.years}yr{sk.years > 1 ? "s" : ""}</span>
+                  </div>
+                  <span className="mono" style={{ fontSize: ".85rem", color: GOLD }}>{sk.level}%</span>
+                </div>
+                <div className="skill-bar" style={{ marginBottom: "1rem" }}>
+                  <div className="skill-bar-fill" style={{ width: visible ? `${sk.level}%` : "0%" }} />
+                </div>
+                <p style={{ color: TEXT2, fontSize: ".8rem", lineHeight: 1.6, marginBottom: ".8rem" }}>{sk.description}</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                  {sk.techs.map(t => <span key={t} className="tag">{t}</span>)}
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Experience ────────────────────────────────────────────
+function Experience({ exps, isAdmin, onAdd, onEdit, onDelete }) {
+  return (
+    <section id="experience" style={{ padding: "6rem 2rem" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 003</p>
+            <h2 className="section-title">Work <span style={{ color: GOLD }}>Experience</span></h2>
+          </div>
+          {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Experience</button>}
+        </div></FadeIn>
+        <div style={{ position: "relative" }}>
+          <div style={{ position: "absolute", left: "24px", top: 0, bottom: 0, width: "1px", background: "linear-gradient(rgba(212,175,55,.5) 0%, transparent 100%)" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: "2rem", paddingLeft: "60px" }}>
+            {exps.map((exp, i) => (
+              <FadeIn key={exp.id} delay={i * 100}>
+                <div style={{ position: "relative" }}>
+                  <div style={{ position: "absolute", left: -48, top: "1.5rem", width: 14, height: 14, borderRadius: "50%", background: BG, border: `2px solid ${GOLD}`, boxShadow: `0 0 12px rgba(212,175,55,.4)` }} />
+                  <div className="card" style={{ borderRadius: 14, padding: "1.8rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: "1rem" }}>
+                      <div>
+                        <h3 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: ".3rem" }}>{exp.position}</h3>
+                        <div style={{ display: "flex", gap: ".8rem", alignItems: "center", flexWrap: "wrap" }}>
+                          <span style={{ color: GOLD, fontSize: ".9rem", fontWeight: 500 }}>{exp.company}</span>
+                          <span style={{ width: 3, height: 3, background: TEXT2, borderRadius: "50%" }} />
+                          <span style={{ color: TEXT2, fontSize: ".8rem" }}>{exp.location}</span>
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+                        <span style={{ fontSize: ".75rem", background: "rgba(212,175,55,.1)", color: GOLD, padding: "3px 10px", borderRadius: 20, border: "1px solid rgba(212,175,55,.2)" }}>{exp.type}</span>
+                        <span className="mono" style={{ fontSize: ".75rem", color: TEXT2 }}>{exp.start} → {exp.end || "Present"}</span>
+                        {isAdmin && <>
+                          <button onClick={() => onEdit(exp)} style={{ background: "rgba(212,175,55,.1)", border: "none", color: GOLD, cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".75rem" }}>Edit</button>
+                          <button onClick={() => onDelete(exp.id)} style={{ background: "rgba(239,68,68,.1)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".75rem" }}>Del</button>
+                        </>}
+                      </div>
+                    </div>
+                    <p style={{ color: TEXT2, fontSize: ".9rem", lineHeight: 1.7, marginBottom: "1rem" }}>{exp.description}</p>
+                    <div style={{ marginBottom: "1rem" }}>
+                      <div style={{ fontSize: ".75rem", color: TEXT2, marginBottom: ".5rem", textTransform: "uppercase", letterSpacing: ".06em" }}>Achievements</div>
+                      {exp.achievements.map((a, j) => (
+                        <div key={j} style={{ display: "flex", gap: ".5rem", marginBottom: ".3rem" }}>
+                          <span style={{ color: GOLD, fontSize: ".8rem" }}>✦</span>
+                          <span style={{ color: TEXT2, fontSize: ".85rem" }}>{a}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                      {exp.technologies.map(t => <span key={t} className="tag">{t}</span>)}
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Education ─────────────────────────────────────────────
+function Education({ edu, isAdmin, onAdd, onEdit, onDelete }) {
+  return (
+    <section id="education" style={{ padding: "6rem 2rem", background: BG2 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 004</p>
+            <h2 className="section-title">Education</h2>
+          </div>
+          {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Education</button>}
+        </div></FadeIn>
+        <div className="grid-2">
+          {edu.map((e, i) => (
+            <FadeIn key={e.id} delay={i * 100}>
+              <div className="card" style={{ borderRadius: 14, padding: "1.8rem", position: "relative", borderLeft: `3px solid ${GOLD}` }}>
+                {isAdmin && (
+                  <div style={{ position: "absolute", top: "1rem", right: "1rem", display: "flex", gap: ".5rem" }}>
+                    <button onClick={() => onEdit(e)} style={{ background: "rgba(212,175,55,.1)", border: "none", color: GOLD, cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".75rem" }}>Edit</button>
+                    <button onClick={() => onDelete(e.id)} style={{ background: "rgba(239,68,68,.1)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".75rem" }}>Del</button>
+                  </div>
+                )}
+                <div style={{ fontSize: ".75rem", color: GOLD, letterSpacing: ".08em", marginBottom: ".5rem", textTransform: "uppercase" }}>{e.start} – {e.end}</div>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: ".3rem" }}>{e.degree}</h3>
+                <div style={{ color: GOLD, fontSize: ".9rem", marginBottom: ".3rem" }}>{e.university}</div>
+                <div style={{ color: TEXT2, fontSize: ".8rem", marginBottom: "1rem" }}>{e.faculty} · {e.department}</div>
+                <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+                  <div style={{ background: "rgba(212,175,55,.08)", border: "1px solid rgba(212,175,55,.15)", borderRadius: 8, padding: ".5rem 1rem", textAlign: "center" }}>
+                    <div className="mono" style={{ fontSize: "1rem", color: GOLD }}>{e.gpa}</div>
+                    <div style={{ fontSize: ".7rem", color: TEXT2 }}>GPA</div>
+                  </div>
+                </div>
+                <p style={{ color: TEXT2, fontSize: ".85rem", lineHeight: 1.7 }}>{e.description}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Projects ──────────────────────────────────────────────
+function Projects({ projects, isAdmin, onAdd, onEdit, onDelete }) {
+  const [filter, setFilter] = useState("All");
+  const cats = ["All", ...new Set(projects.map(p => p.category))];
+  const filtered = filter === "All" ? projects : projects.filter(p => p.category === filter);
+  return (
+    <section id="projects" style={{ padding: "6rem 2rem" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 005</p>
+            <h2 className="section-title">Featured <span style={{ color: GOLD }}>Projects</span></h2>
+          </div>
+          {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Project</button>}
+        </div></FadeIn>
+        <FadeIn>
+          <div style={{ display: "flex", gap: ".5rem", flexWrap: "wrap", marginBottom: "2.5rem" }}>
+            {cats.map(c => (
+              <button key={c} onClick={() => setFilter(c)} style={{ padding: ".4rem 1rem", borderRadius: 20, fontSize: ".8rem", border: `1px solid ${filter === c ? GOLD : "rgba(212,175,55,.2)"}`, background: filter === c ? "rgba(212,175,55,.1)" : "transparent", color: filter === c ? GOLD : TEXT2, cursor: "pointer", transition: "all .3s" }}>{c}</button>
+            ))}
+          </div>
+        </FadeIn>
+        <div className="grid-2">
+          {filtered.map((p, i) => {
+            const st = statusColors[p.status] || statusColors["Completed"];
+            return (
+              <FadeIn key={p.id} delay={i * 80}>
+                <div className="card" style={{ borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                  <div style={{ height: 160, background: `linear-gradient(135deg, #1a1a2e 0%, #0d0d1a 100%)`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+                    <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(212,175,55,.06) 1px, transparent 0)", backgroundSize: "20px 20px" }} />
+                    <span className="serif" style={{ fontSize: "3rem", color: GOLD, opacity: .3, zIndex: 1 }}>{p.name.slice(0, 2)}</span>
+                    <span style={{ position: "absolute", top: "1rem", right: "1rem", ...st, padding: "3px 10px", borderRadius: 20, fontSize: ".7rem", fontWeight: 600, letterSpacing: ".06em", textTransform: "uppercase", border: `1px solid ${st.border}` }}>{p.status}</span>
+                  </div>
+                  <div style={{ padding: "1.5rem", flex: 1, display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: ".8rem" }}>
+                      <h3 style={{ fontSize: "1.05rem", fontWeight: 600 }}>{p.name}</h3>
+                      {isAdmin && (
+                        <div style={{ display: "flex", gap: ".3rem" }}>
+                          <button onClick={() => onEdit(p)} style={{ background: "rgba(212,175,55,.1)", border: "none", color: GOLD, cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".7rem" }}>Edit</button>
+                          <button onClick={() => onDelete(p.id)} style={{ background: "rgba(239,68,68,.1)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".7rem" }}>Del</button>
+                        </div>
+                      )}
+                    </div>
+                    <p style={{ color: TEXT2, fontSize: ".85rem", lineHeight: 1.6, marginBottom: "1rem", flex: 1 }}>{p.description}</p>
+                    <div style={{ marginBottom: "1rem" }}>
+                      {p.features.slice(0, 3).map(f => (
+                        <div key={f} style={{ display: "flex", gap: ".5rem", marginBottom: ".2rem" }}>
+                          <span style={{ color: GOLD, fontSize: ".75rem" }}>→</span>
+                          <span style={{ color: TEXT2, fontSize: ".8rem" }}>{f}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "1rem" }}>
+                      {p.technologies.slice(0, 4).map(t => <span key={t} className="tag">{t}</span>)}
+                    </div>
+                    <div style={{ display: "flex", gap: ".8rem" }}>
+                      {p.github && <a href={p.github} target="_blank" rel="noreferrer" style={{ fontSize: ".8rem", color: GOLD, textDecoration: "none", display: "flex", alignItems: "center", gap: ".3rem" }}>GitHub →</a>}
+                      {p.demo && <a href={p.demo} target="_blank" rel="noreferrer" style={{ fontSize: ".8rem", color: TEXT2, textDecoration: "none", display: "flex", alignItems: "center", gap: ".3rem" }}>Live Demo →</a>}
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Certifications ────────────────────────────────────────
+function Certs({ certs, isAdmin, onAdd, onEdit, onDelete }) {
+  return (
+    <section id="certs" style={{ padding: "6rem 2rem", background: BG2 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 006</p>
+            <h2 className="section-title">Certifications</h2>
+          </div>
+          {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Cert</button>}
+        </div></FadeIn>
+        <div className="grid-3">
+          {certs.map((c, i) => (
+            <FadeIn key={c.id} delay={i * 80}>
+              <div className="card" style={{ borderRadius: 14, padding: "1.5rem", position: "relative" }}>
+                {isAdmin && (
+                  <div style={{ position: "absolute", top: ".8rem", right: ".8rem", display: "flex", gap: ".3rem" }}>
+                    <button onClick={() => onEdit(c)} style={{ background: "rgba(212,175,55,.1)", border: "none", color: GOLD, cursor: "pointer", borderRadius: 6, padding: "2px 6px", fontSize: ".7rem" }}>Edit</button>
+                    <button onClick={() => onDelete(c.id)} style={{ background: "rgba(239,68,68,.1)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "2px 6px", fontSize: ".7rem" }}>Del</button>
+                  </div>
+                )}
+                <div style={{ width: 48, height: 48, borderRadius: 10, background: "rgba(212,175,55,.08)", border: "1px solid rgba(212,175,55,.2)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem", fontSize: "1.5rem" }}>🏅</div>
+                <h3 style={{ fontSize: ".95rem", fontWeight: 600, marginBottom: ".5rem", lineHeight: 1.4 }}>{c.name}</h3>
+                <div style={{ color: GOLD, fontSize: ".85rem", marginBottom: ".3rem" }}>{c.issuer}</div>
+                <div className="mono" style={{ color: TEXT2, fontSize: ".75rem", marginBottom: "1rem" }}>{c.issued} {c.expiry ? `→ ${c.expiry}` : ""}</div>
+                {c.credId && <div style={{ fontSize: ".75rem", color: TEXT2, marginBottom: ".8rem" }}>ID: {c.credId}</div>}
+                {c.url && <a href={c.url} target="_blank" rel="noreferrer" style={{ fontSize: ".8rem", color: GOLD, textDecoration: "none" }}>Verify →</a>}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Achievements ──────────────────────────────────────────
+function Achievements({ items, isAdmin, onAdd, onDelete }) {
+  return (
+    <section style={{ padding: "6rem 2rem" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 007</p>
+            <h2 className="section-title">Achievements</h2>
+          </div>
+          {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add</button>}
+        </div></FadeIn>
+        <div className="grid-3">
+          {items.map((a, i) => (
+            <FadeIn key={a.id} delay={i * 80}>
+              <div className="card" style={{ borderRadius: 14, padding: "1.5rem", position: "relative", borderTop: `2px solid ${GOLD}` }}>
+                {isAdmin && <button onClick={() => onDelete(a.id)} style={{ position: "absolute", top: ".8rem", right: ".8rem", background: "rgba(239,68,68,.1)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "2px 6px", fontSize: ".7rem" }}>Del</button>}
+                <div style={{ fontSize: "1.8rem", marginBottom: ".8rem" }}>🏆</div>
+                <h3 style={{ fontSize: ".95rem", fontWeight: 600, marginBottom: ".5rem" }}>{a.title}</h3>
+                <div style={{ color: GOLD, fontSize: ".8rem", marginBottom: ".3rem" }}>{a.organization}</div>
+                <div className="mono" style={{ color: TEXT2, fontSize: ".75rem", marginBottom: ".8rem" }}>{a.date}</div>
+                <p style={{ color: TEXT2, fontSize: ".8rem", lineHeight: 1.6 }}>{a.description}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Courses ───────────────────────────────────────────────
+function Courses({ courses, isAdmin, onAdd, onDelete }) {
+  return (
+    <section style={{ padding: "6rem 2rem", background: BG2 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 008</p>
+            <h2 className="section-title">Courses & <span style={{ color: GOLD }}>Learning</span></h2>
+          </div>
+          {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Course</button>}
+        </div></FadeIn>
+        <div className="grid-2">
+          {courses.map((c, i) => (
+            <FadeIn key={c.id} delay={i * 80}>
+              <div className="card" style={{ borderRadius: 14, padding: "1.5rem", position: "relative", display: "flex", gap: "1rem" }}>
+                {isAdmin && <button onClick={() => onDelete(c.id)} style={{ position: "absolute", top: ".8rem", right: ".8rem", background: "rgba(239,68,68,.1)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "2px 6px", fontSize: ".7rem" }}>Del</button>}
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(212,175,55,.08)", border: "1px solid rgba(212,175,55,.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "1.2rem" }}>📚</div>
+                <div>
+                  <h3 style={{ fontSize: ".95rem", fontWeight: 600, marginBottom: ".3rem" }}>{c.name}</h3>
+                  <div style={{ color: TEXT2, fontSize: ".8rem", marginBottom: ".3rem" }}>{c.provider}</div>
+                  <div className="mono" style={{ color: TEXT2, fontSize: ".75rem", marginBottom: ".8rem" }}>{c.duration} · Completed {c.completed}</div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                    {c.skills.map(s => <span key={s} className="tag">{s}</span>)}
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Freelance ─────────────────────────────────────────────
+function Freelance({ items, isAdmin, onAdd, onDelete }) {
+  return (
+    <section style={{ padding: "6rem 2rem" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 009</p>
+            <h2 className="section-title">Freelance <span style={{ color: GOLD }}>Work</span></h2>
+          </div>
+          {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Project</button>}
+        </div></FadeIn>
+        <div className="grid-2">
+          {items.map((f, i) => (
+            <FadeIn key={f.id} delay={i * 100}>
+              <div className="card" style={{ borderRadius: 14, padding: "1.8rem", position: "relative" }}>
+                {isAdmin && <button onClick={() => onDelete(f.id)} style={{ position: "absolute", top: ".8rem", right: ".8rem", background: "rgba(239,68,68,.1)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "2px 6px", fontSize: ".7rem" }}>Del</button>}
+                <div style={{ display: "flex", gap: ".5rem", marginBottom: "1rem", flexWrap: "wrap" }}>
+                  <span style={{ background: "rgba(212,175,55,.1)", color: GOLD, border: "1px solid rgba(212,175,55,.2)", padding: "3px 10px", borderRadius: 20, fontSize: ".75rem" }}>{f.clientType}</span>
+                  {f.nda && <span style={{ background: "rgba(239,68,68,.1)", color: "#ef4444", border: "1px solid rgba(239,68,68,.2)", padding: "3px 10px", borderRadius: 20, fontSize: ".75rem" }}>NDA Protected</span>}
+                </div>
+                <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: ".5rem" }}>{f.name}</h3>
+                <div className="mono" style={{ color: TEXT2, fontSize: ".75rem", marginBottom: "1rem" }}>Duration: {f.duration}</div>
+                <p style={{ color: TEXT2, fontSize: ".85rem", lineHeight: 1.6, marginBottom: "1rem" }}>{f.description}</p>
+                <div style={{ background: "rgba(52,211,153,.06)", border: "1px solid rgba(52,211,153,.15)", borderRadius: 8, padding: ".8rem", marginBottom: "1rem" }}>
+                  <div style={{ fontSize: ".75rem", color: "#34d399", marginBottom: ".3rem", textTransform: "uppercase", letterSpacing: ".06em" }}>Results</div>
+                  <div style={{ color: TEXT2, fontSize: ".85rem" }}>{f.results}</div>
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                  {f.technologies.map(t => <span key={t} className="tag">{t}</span>)}
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Contact ───────────────────────────────────────────────
+function Contact({ profile }) {
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [sent, setSent] = useState(false);
+  const handleSubmit = (e) => { e.preventDefault(); setSent(true); setTimeout(() => setSent(false), 4000); setForm({ name: "", email: "", subject: "", message: "" }); };
+  return (
+    <section id="contact" style={{ padding: "6rem 2rem", background: BG2 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <FadeIn><div style={{ textAlign: "center", marginBottom: "4rem" }}>
+          <p className="mono" style={{ color: GOLD, fontSize: ".8rem", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: ".5rem" }}>// 010</p>
+          <h2 className="section-title">Get In <span style={{ color: GOLD }}>Touch</span></h2>
+          <p style={{ color: TEXT2, marginTop: "1rem", maxWidth: 500, margin: "1rem auto 0" }}>Have a project in mind or want to collaborate? I'd love to hear from you.</p>
+        </div></FadeIn>
+        <div className="split-2">
+          <FadeIn delay={100}>
+            <div>
+              {[
+                { icon: "✉", label: "Email", value: profile.email, href: `mailto:${profile.email}` },
+                { icon: "💼", label: "LinkedIn", value: "linkedin.com/in/alexreid", href: profile.linkedin },
+                { icon: "🐱", label: "GitHub", value: "github.com/alexreid", href: profile.github },
+                { icon: "💬", label: "WhatsApp", value: "Available for quick chats", href: profile.whatsapp },
+              ].map(item => (
+                <a key={item.label} href={item.href} target="_blank" rel="noreferrer" style={{ display: "flex", gap: "1rem", alignItems: "center", padding: "1.2rem", marginBottom: "1rem", background: CARD, border: "1px solid rgba(212,175,55,.1)", borderRadius: 12, textDecoration: "none", transition: "all .3s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(212,175,55,.35)"; e.currentTarget.style.transform = "translateX(4px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(212,175,55,.1)"; e.currentTarget.style.transform = ""; }}>
+                  <span style={{ fontSize: "1.3rem" }}>{item.icon}</span>
+                  <div>
+                    <div style={{ fontSize: ".8rem", color: GOLD, textTransform: "uppercase", letterSpacing: ".06em" }}>{item.label}</div>
+                    <div style={{ color: TEXT2, fontSize: ".9rem" }}>{item.value}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </FadeIn>
+          <FadeIn delay={200}>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div className="form-row">
+                <div>
+                  <label style={{ fontSize: ".75rem", color: GOLD, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: ".4rem" }}>Name</label>
+                  <input className="input-field" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="John Doe" required />
+                </div>
+                <div>
+                  <label style={{ fontSize: ".75rem", color: GOLD, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: ".4rem" }}>Email</label>
+                  <input className="input-field" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="john@example.com" required />
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize: ".75rem", color: GOLD, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: ".4rem" }}>Subject</label>
+                <input className="input-field" value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} placeholder="Project collaboration" required />
+              </div>
+              <div>
+                <label style={{ fontSize: ".75rem", color: GOLD, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: ".4rem" }}>Message</label>
+                <textarea className="input-field" rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} placeholder="Tell me about your project..." required style={{ resize: "vertical" }} />
+              </div>
+              <button className="btn-gold" type="submit" style={{ padding: "1rem", borderRadius: 10, fontSize: ".95rem", width: "100%" }}>
+                {sent ? "✓ Message Sent!" : "Send Message →"}
+              </button>
+            </form>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Footer ────────────────────────────────────────────────
+function Footer({ profile }) {
+  return (
+    <footer style={{ padding: "3rem 2rem", borderTop: "1px solid rgba(212,175,55,.1)", textAlign: "center" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div className="serif" style={{ fontSize: "2rem", fontWeight: 300, color: GOLD, marginBottom: "1rem" }}>{profile.name}</div>
+        <p style={{ color: TEXT2, fontSize: ".85rem", marginBottom: "1.5rem" }}>Built with precision. Designed with intent.</p>
+        <div style={{ display: "flex", gap: "2rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "1.5rem" }}>
+          {["Home", "About", "Skills", "Projects", "Contact"].map(l => (
+            <a key={l} href={`#${l.toLowerCase()}`} style={{ color: TEXT2, textDecoration: "none", fontSize: ".8rem", letterSpacing: ".06em", transition: "color .3s" }}
+              onMouseEnter={e => e.currentTarget.style.color = GOLD}
+              onMouseLeave={e => e.currentTarget.style.color = TEXT2}>{l}</a>
+          ))}
+        </div>
+        <p className="mono" style={{ color: "#333", fontSize: ".75rem" }}>© {new Date().getFullYear()} {profile.name} · All rights reserved</p>
+      </div>
+    </footer>
+  );
+}
+
+// ─── Modals ────────────────────────────────────────────────
+function SkillModal({ open, onClose, onSave, initial }) {
+  const blank = { name: "", category: "Programming", years: 1, level: 80, description: "", techs: "" };
+  const [form, setForm] = useState(initial || blank);
+  useEffect(() => { setForm(initial || blank); }, [open]);
+  const cats = ["Programming", "AI & Machine Learning", "Cybersecurity", "Networking", "DevOps", "Cloud Computing", "Databases", "Mobile Development", "Web Development", "Tools"];
+  return (
+    <Modal open={open} onClose={onClose} title={initial ? "Edit Skill" : "Add Skill"}>
+      <FieldRow label="Skill Name"><input className="input-field" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Python" /></FieldRow>
+      <FieldRow label="Category">
+        <select className="input-field" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+          {cats.map(c => <option key={c}>{c}</option>)}
+        </select>
+      </FieldRow>
+      <div className="form-row">
+        <FieldRow label="Experience (Years)"><input className="input-field" type="number" min={0} max={30} value={form.years} onChange={e => setForm({ ...form, years: +e.target.value })} /></FieldRow>
+        <FieldRow label="Level (0-100)"><input className="input-field" type="number" min={0} max={100} value={form.level} onChange={e => setForm({ ...form, level: +e.target.value })} /></FieldRow>
+      </div>
+      <FieldRow label="Description"><textarea className="input-field" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Brief description..." /></FieldRow>
+      <FieldRow label="Technologies (comma-separated)"><input className="input-field" value={typeof form.techs === "string" ? form.techs : form.techs.join(", ")} onChange={e => setForm({ ...form, techs: e.target.value })} placeholder="React, Node.js, TypeScript" /></FieldRow>
+      <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+        <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10, fontSize: ".9rem" }} onClick={() => onSave({ ...form, techs: typeof form.techs === "string" ? form.techs.split(",").map(t => t.trim()).filter(Boolean) : form.techs, id: form.id || Date.now() })}>
+          {initial ? "Save Changes" : "Add Skill"}
+        </button>
+        <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10, fontSize: ".9rem" }} onClick={onClose}>Cancel</button>
+      </div>
+    </Modal>
+  );
+}
+
+function ExpModal({ open, onClose, onSave, initial }) {
+  const blank = { position: "", company: "", type: "Full Time", start: "", end: "", description: "", technologies: "", achievements: "", location: "" };
+  const [form, setForm] = useState(initial || blank);
+  useEffect(() => { setForm(initial ? { ...initial, technologies: initial.technologies.join(", "), achievements: initial.achievements.join("\n") } : blank); }, [open]);
+  return (
+    <Modal open={open} onClose={onClose} title={initial ? "Edit Experience" : "Add Experience"}>
+      <FieldRow label="Position"><input className="input-field" value={form.position} onChange={e => setForm({ ...form, position: e.target.value })} placeholder="Senior Engineer" /></FieldRow>
+      <div className="form-row">
+        <FieldRow label="Company"><input className="input-field" value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} placeholder="Google" /></FieldRow>
+        <FieldRow label="Location"><input className="input-field" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="Remote" /></FieldRow>
+      </div>
+      <FieldRow label="Type">
+        <select className="input-field" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+          {["Full Time", "Part Time", "Internship", "Freelance", "Volunteer", "Contract"].map(t => <option key={t}>{t}</option>)}
+        </select>
+      </FieldRow>
+      <div className="form-row">
+        <FieldRow label="Start (YYYY-MM)"><input className="input-field" value={form.start} onChange={e => setForm({ ...form, start: e.target.value })} placeholder="2022-01" /></FieldRow>
+        <FieldRow label="End (leave blank = Present)"><input className="input-field" value={form.end} onChange={e => setForm({ ...form, end: e.target.value })} placeholder="2023-12" /></FieldRow>
+      </div>
+      <FieldRow label="Description"><textarea className="input-field" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></FieldRow>
+      <FieldRow label="Technologies (comma-separated)"><input className="input-field" value={form.technologies} onChange={e => setForm({ ...form, technologies: e.target.value })} placeholder="Python, React, AWS" /></FieldRow>
+      <FieldRow label="Achievements (one per line)"><textarea className="input-field" rows={3} value={form.achievements} onChange={e => setForm({ ...form, achievements: e.target.value })} /></FieldRow>
+      <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+        <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10, fontSize: ".9rem" }} onClick={() => onSave({ ...form, technologies: form.technologies.split(",").map(t => t.trim()).filter(Boolean), achievements: form.achievements.split("\n").map(a => a.trim()).filter(Boolean), id: form.id || Date.now() })}>
+          {initial ? "Save Changes" : "Add Experience"}
+        </button>
+        <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10, fontSize: ".9rem" }} onClick={onClose}>Cancel</button>
+      </div>
+    </Modal>
+  );
+}
+
+function ProjectModal({ open, onClose, onSave, initial }) {
+  const blank = { name: "", category: "Web Development", description: "", technologies: "", features: "", status: "In Progress", github: "", demo: "", start: "", end: "" };
+  const [form, setForm] = useState(initial || blank);
+  useEffect(() => { setForm(initial ? { ...initial, technologies: initial.technologies.join(", "), features: initial.features.join("\n") } : blank); }, [open]);
+  return (
+    <Modal open={open} onClose={onClose} title={initial ? "Edit Project" : "Add Project"}>
+      <FieldRow label="Project Name"><input className="input-field" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="My Awesome Project" /></FieldRow>
+      <div className="form-row">
+        <FieldRow label="Category"><input className="input-field" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} placeholder="Web Development" /></FieldRow>
+        <FieldRow label="Status">
+          <select className="input-field" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+            {["Completed", "In Progress", "Archived"].map(s => <option key={s}>{s}</option>)}
+          </select>
+        </FieldRow>
+      </div>
+      <FieldRow label="Description"><textarea className="input-field" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></FieldRow>
+      <FieldRow label="Technologies (comma-separated)"><input className="input-field" value={form.technologies} onChange={e => setForm({ ...form, technologies: e.target.value })} /></FieldRow>
+      <FieldRow label="Features (one per line)"><textarea className="input-field" rows={3} value={form.features} onChange={e => setForm({ ...form, features: e.target.value })} /></FieldRow>
+      <div className="form-row">
+        <FieldRow label="GitHub URL"><input className="input-field" value={form.github} onChange={e => setForm({ ...form, github: e.target.value })} /></FieldRow>
+        <FieldRow label="Demo URL"><input className="input-field" value={form.demo} onChange={e => setForm({ ...form, demo: e.target.value })} /></FieldRow>
+      </div>
+      <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+        <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10, fontSize: ".9rem" }} onClick={() => onSave({ ...form, technologies: form.technologies.split(",").map(t => t.trim()).filter(Boolean), features: form.features.split("\n").map(f => f.trim()).filter(Boolean), id: form.id || Date.now() })}>
+          {initial ? "Save Changes" : "Add Project"}
+        </button>
+        <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10, fontSize: ".9rem" }} onClick={onClose}>Cancel</button>
+      </div>
+    </Modal>
+  );
+}
+
+function CertModal({ open, onClose, onSave, initial }) {
+  const blank = { name: "", issuer: "", issued: "", expiry: "", credId: "", url: "" };
+  const [form, setForm] = useState(initial || blank);
+  useEffect(() => { setForm(initial || blank); }, [open]);
+  return (
+    <Modal open={open} onClose={onClose} title={initial ? "Edit Certification" : "Add Certification"}>
+      <FieldRow label="Certificate Name"><input className="input-field" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="AWS Solutions Architect" /></FieldRow>
+      <FieldRow label="Issuer"><input className="input-field" value={form.issuer} onChange={e => setForm({ ...form, issuer: e.target.value })} placeholder="Amazon Web Services" /></FieldRow>
+      <div className="form-row">
+        <FieldRow label="Issue Date"><input className="input-field" value={form.issued} onChange={e => setForm({ ...form, issued: e.target.value })} placeholder="2023-01" /></FieldRow>
+        <FieldRow label="Expiry Date"><input className="input-field" value={form.expiry} onChange={e => setForm({ ...form, expiry: e.target.value })} placeholder="2026-01" /></FieldRow>
+      </div>
+      <FieldRow label="Credential ID"><input className="input-field" value={form.credId} onChange={e => setForm({ ...form, credId: e.target.value })} /></FieldRow>
+      <FieldRow label="Verification URL"><input className="input-field" value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} /></FieldRow>
+      <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+        <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10, fontSize: ".9rem" }} onClick={() => onSave({ ...form, id: form.id || Date.now() })}>
+          {initial ? "Save Changes" : "Add Certification"}
+        </button>
+        <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10, fontSize: ".9rem" }} onClick={onClose}>Cancel</button>
+      </div>
+    </Modal>
+  );
+}
+
+function EduModal({ open, onClose, onSave, initial }) {
+  const blank = { degree: "", university: "", faculty: "", department: "", gpa: "", start: "", end: "", description: "" };
+  const [form, setForm] = useState(initial || blank);
+  useEffect(() => { setForm(initial || blank); }, [open]);
+  return (
+    <Modal open={open} onClose={onClose} title={initial ? "Edit Education" : "Add Education"}>
+      <FieldRow label="Degree"><input className="input-field" value={form.degree} onChange={e => setForm({ ...form, degree: e.target.value })} placeholder="B.S. Computer Science" /></FieldRow>
+      <FieldRow label="University"><input className="input-field" value={form.university} onChange={e => setForm({ ...form, university: e.target.value })} placeholder="MIT" /></FieldRow>
+      <div className="form-row">
+        <FieldRow label="Faculty"><input className="input-field" value={form.faculty} onChange={e => setForm({ ...form, faculty: e.target.value })} /></FieldRow>
+        <FieldRow label="Department"><input className="input-field" value={form.department} onChange={e => setForm({ ...form, department: e.target.value })} /></FieldRow>
+      </div>
+      <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
+        <FieldRow label="GPA"><input className="input-field" value={form.gpa} onChange={e => setForm({ ...form, gpa: e.target.value })} /></FieldRow>
+        <FieldRow label="Start Year"><input className="input-field" value={form.start} onChange={e => setForm({ ...form, start: e.target.value })} placeholder="2016" /></FieldRow>
+        <FieldRow label="End Year"><input className="input-field" value={form.end} onChange={e => setForm({ ...form, end: e.target.value })} placeholder="2020" /></FieldRow>
+      </div>
+      <FieldRow label="Description"><textarea className="input-field" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></FieldRow>
+      <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+        <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10, fontSize: ".9rem" }} onClick={() => onSave({ ...form, id: form.id || Date.now() })}>
+          {initial ? "Save Changes" : "Add Education"}
+        </button>
+        <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10, fontSize: ".9rem" }} onClick={onClose}>Cancel</button>
+      </div>
+    </Modal>
+  );
+}
+
+// ─── Admin Auth ────────────────────────────────────────────
+function AdminLogin({ onLogin, onClose }) {
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState(false);
+  const handle = () => { if (pw === "846855") { onLogin(); } else { setErr(true); setTimeout(() => setErr(false), 2000); } };
+  return (
+    <Modal open={true} onClose={onClose} title="Admin Access">
+      <div style={{ textAlign: "center", marginBottom: "1.5rem", marginTop: "-.5rem" }}>
+        <div style={{ fontSize: "2.5rem", marginBottom: ".5rem" }}>🔐</div>
+        <p style={{ color: TEXT2, fontSize: ".85rem" }}>Enter password to access the dashboard</p>
+      </div>
+      <input className="input-field" type="password" inputMode="numeric" value={pw} onChange={e => setPw(e.target.value)} placeholder="Enter password" onKeyDown={e => e.key === "Enter" && handle()} style={{ border: err ? "1px solid #ef4444" : undefined, textAlign: "center", letterSpacing: ".3em" }} autoFocus />
+      {err && <p style={{ color: "#ef4444", fontSize: ".8rem", marginTop: ".4rem", textAlign: "center" }}>Incorrect password. Try again.</p>}
+      <button className="btn-gold" style={{ width: "100%", padding: ".85rem", borderRadius: 10, marginTop: "1rem", fontSize: ".95rem" }} onClick={handle}>Enter Dashboard →</button>
+    </Modal>
+  );
+}
+
+// ─── Root ──────────────────────────────────────────────────
+export default function Portfolio() {
+  const [data, setData] = useState(defaultData);
+  const [activeSection, setActiveSection] = useState("home");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [modal, setModal] = useState(null); // { type, item }
+
+  // CRUD helpers
+  const addItem = (key, item) => setData(d => ({ ...d, [key]: [...d[key], item] }));
+  const editItem = (key, item) => setData(d => ({ ...d, [key]: d[key].map(x => x.id === item.id ? item : x) }));
+  const delItem = (key, id) => setData(d => ({ ...d, [key]: d[key].filter(x => x.id !== id) }));
+
+  // Scroll tracking
+  useEffect(() => {
+    const fn = () => {
+      const sections = ["home", "about", "skills", "experience", "projects", "certs", "contact"];
+      for (const id of [...sections].reverse()) {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 120) { setActiveSection(id); break; }
+      }
+    };
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+
+  const closeModal = () => setModal(null);
+
+  return (
+    <>
+      <style>{css}</style>
+      <Nav active={activeSection} onNav={setActiveSection} />
+      <Hero data={data.profile} />
+      <Stats data={data.stats} />
+      <About profile={data.profile} />
+      <Skills skills={data.skills} isAdmin={isAdmin}
+        onAdd={() => setModal({ type: "skill", item: null })}
+        onEdit={item => setModal({ type: "skill", item })}
+        onDelete={id => delItem("skills", id)} />
+      <Experience exps={data.experiences} isAdmin={isAdmin}
+        onAdd={() => setModal({ type: "exp", item: null })}
+        onEdit={item => setModal({ type: "exp", item })}
+        onDelete={id => delItem("experiences", id)} />
+      <Education edu={data.education} isAdmin={isAdmin}
+        onAdd={() => setModal({ type: "edu", item: null })}
+        onEdit={item => setModal({ type: "edu", item })}
+        onDelete={id => delItem("education", id)} />
+      <Projects projects={data.projects} isAdmin={isAdmin}
+        onAdd={() => setModal({ type: "project", item: null })}
+        onEdit={item => setModal({ type: "project", item })}
+        onDelete={id => delItem("projects", id)} />
+      <Certs certs={data.certs} isAdmin={isAdmin}
+        onAdd={() => setModal({ type: "cert", item: null })}
+        onEdit={item => setModal({ type: "cert", item })}
+        onDelete={id => delItem("certs", id)} />
+      <Achievements items={data.achievements} isAdmin={isAdmin}
+        onAdd={() => setModal({ type: "ach", item: null })}
+        onDelete={id => delItem("achievements", id)} />
+      <Courses courses={data.courses} isAdmin={isAdmin}
+        onAdd={() => setModal({ type: "course", item: null })}
+        onDelete={id => delItem("courses", id)} />
+      <Freelance items={data.freelance} isAdmin={isAdmin}
+        onAdd={() => setModal({ type: "freelance", item: null })}
+        onDelete={id => delItem("freelance", id)} />
+      <Contact profile={data.profile} />
+      <Footer profile={data.profile} />
+
+      {/* Admin pill */}
+      <button className="admin-pill" onClick={() => isAdmin ? setIsAdmin(false) : setShowAdminLogin(true)}>
+        {isAdmin ? "🔓 Exit Admin" : "⚙ Admin"}
+      </button>
+
+      {/* Auth */}
+      {showAdminLogin && !isAdmin && <AdminLogin onLogin={() => { setIsAdmin(true); setShowAdminLogin(false); }} onClose={() => setShowAdminLogin(false)} />}
+
+      {/* Modals */}
+      <SkillModal open={modal?.type === "skill"} onClose={closeModal} initial={modal?.item}
+        onSave={item => { modal?.item ? editItem("skills", item) : addItem("skills", item); closeModal(); }} />
+      <ExpModal open={modal?.type === "exp"} onClose={closeModal} initial={modal?.item}
+        onSave={item => { modal?.item ? editItem("experiences", item) : addItem("experiences", item); closeModal(); }} />
+      <EduModal open={modal?.type === "edu"} onClose={closeModal} initial={modal?.item}
+        onSave={item => { modal?.item ? editItem("education", item) : addItem("education", item); closeModal(); }} />
+      <ProjectModal open={modal?.type === "project"} onClose={closeModal} initial={modal?.item}
+        onSave={item => { modal?.item ? editItem("projects", item) : addItem("projects", item); closeModal(); }} />
+      <CertModal open={modal?.type === "cert"} onClose={closeModal} initial={modal?.item}
+        onSave={item => { modal?.item ? editItem("certs", item) : addItem("certs", item); closeModal(); }} />
+
+      {/* Ach quick-add modal */}
+      {modal?.type === "ach" && (
+        <Modal open={true} onClose={closeModal} title="Add Achievement">
+          {(() => {
+            const [f, setF] = useState({ title: "", date: "", organization: "", description: "" });
+            return <>
+              <FieldRow label="Title"><input className="input-field" value={f.title} onChange={e => setF({ ...f, title: e.target.value })} /></FieldRow>
+              <div className="form-row">
+                <FieldRow label="Date"><input className="input-field" value={f.date} onChange={e => setF({ ...f, date: e.target.value })} placeholder="2024-01" /></FieldRow>
+                <FieldRow label="Organization"><input className="input-field" value={f.organization} onChange={e => setF({ ...f, organization: e.target.value })} /></FieldRow>
+              </div>
+              <FieldRow label="Description"><textarea className="input-field" rows={3} value={f.description} onChange={e => setF({ ...f, description: e.target.value })} /></FieldRow>
+              <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+                <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => { addItem("achievements", { ...f, id: Date.now() }); closeModal(); }}>Add Achievement</button>
+                <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={closeModal}>Cancel</button>
+              </div>
+            </>;
+          })()}
+        </Modal>
+      )}
+
+      {/* Course quick-add */}
+      {modal?.type === "course" && (
+        <Modal open={true} onClose={closeModal} title="Add Course">
+          {(() => {
+            const [f, setF] = useState({ name: "", provider: "", duration: "", completed: "", skills: "" });
+            return <>
+              <FieldRow label="Course Name"><input className="input-field" value={f.name} onChange={e => setF({ ...f, name: e.target.value })} /></FieldRow>
+              <FieldRow label="Provider"><input className="input-field" value={f.provider} onChange={e => setF({ ...f, provider: e.target.value })} /></FieldRow>
+              <div className="form-row">
+                <FieldRow label="Duration"><input className="input-field" value={f.duration} onChange={e => setF({ ...f, duration: e.target.value })} placeholder="3 months" /></FieldRow>
+                <FieldRow label="Completed"><input className="input-field" value={f.completed} onChange={e => setF({ ...f, completed: e.target.value })} placeholder="2023-06" /></FieldRow>
+              </div>
+              <FieldRow label="Skills (comma-separated)"><input className="input-field" value={f.skills} onChange={e => setF({ ...f, skills: e.target.value })} /></FieldRow>
+              <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+                <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => { addItem("courses", { ...f, skills: f.skills.split(",").map(s => s.trim()).filter(Boolean), id: Date.now() }); closeModal(); }}>Add Course</button>
+                <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={closeModal}>Cancel</button>
+              </div>
+            </>;
+          })()}
+        </Modal>
+      )}
+
+      {/* Freelance quick-add */}
+      {modal?.type === "freelance" && (
+        <Modal open={true} onClose={closeModal} title="Add Freelance Project">
+          {(() => {
+            const [f, setF] = useState({ clientType: "", name: "", duration: "", technologies: "", description: "", deliverables: "", results: "", nda: false });
+            return <>
+              <div className="form-row">
+                <FieldRow label="Client Type"><input className="input-field" value={f.clientType} onChange={e => setF({ ...f, clientType: e.target.value })} placeholder="Startup" /></FieldRow>
+                <FieldRow label="Project Name"><input className="input-field" value={f.name} onChange={e => setF({ ...f, name: e.target.value })} /></FieldRow>
+              </div>
+              <FieldRow label="Duration"><input className="input-field" value={f.duration} onChange={e => setF({ ...f, duration: e.target.value })} placeholder="3 months" /></FieldRow>
+              <FieldRow label="Description"><textarea className="input-field" rows={2} value={f.description} onChange={e => setF({ ...f, description: e.target.value })} /></FieldRow>
+              <FieldRow label="Technologies (comma-separated)"><input className="input-field" value={f.technologies} onChange={e => setF({ ...f, technologies: e.target.value })} /></FieldRow>
+              <FieldRow label="Results"><input className="input-field" value={f.results} onChange={e => setF({ ...f, results: e.target.value })} /></FieldRow>
+              <div style={{ display: "flex", gap: ".5rem", alignItems: "center", marginBottom: "1rem" }}>
+                <input type="checkbox" id="nda" checked={f.nda} onChange={e => setF({ ...f, nda: e.target.checked })} />
+                <label htmlFor="nda" style={{ color: TEXT2, fontSize: ".9rem", cursor: "pointer" }}>NDA Protected</label>
+              </div>
+              <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+                <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => { addItem("freelance", { ...f, technologies: f.technologies.split(",").map(t => t.trim()).filter(Boolean), deliverables: [], id: Date.now() }); closeModal(); }}>Add Project</button>
+                <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={closeModal}>Cancel</button>
+              </div>
+            </>;
+          })()}
+        </Modal>
+      )}
+    </>
+  );
+}
