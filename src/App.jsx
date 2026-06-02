@@ -73,6 +73,13 @@ section{width:100%;overflow:hidden}
 select.input-field option{background:#111}
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 0;transition:all .4s;border-bottom:1px solid transparent}
 .nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom-color:rgba(212,175,55,.1)}
+@keyframes otw-slide{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes otw-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
+.otw-badge{position:absolute;bottom:-28px;right:-16px;background:rgba(17,17,17,.95);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);border-radius:40px;padding:.55rem 1rem .55rem .75rem;display:flex;align-items:center;gap:.5rem;animation:otw-slide 1s ease 1s both;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.otw-dot{width:8px;height:8px;border-radius:50%;background:#34d399;flex-shrink:0;animation:otw-pulse 2s ease infinite}
+.otw-text{font-size:.72rem;font-weight:600;color:#D4AF37;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.otw-sub{font-size:.65rem;color:#666;white-space:nowrap;font-family:'Roboto Mono',monospace}
+.otw-badge::before{content:'';position:absolute;inset:-1px;border-radius:40px;background:linear-gradient(135deg,rgba(212,175,55,.15),transparent);pointer-events:none}
 .section-pad{padding:6rem 2rem}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
 .nav-links-desktop{display:flex;gap:2.5rem;align-items:center}
@@ -113,65 +120,73 @@ select.input-field option{background:#111}
 
 const defaultData = {
   profile: {
-    name: "Alexander Reid",
-    title: "Software Engineer & AI Researcher",
-    taglines: ["Full Stack Developer", "AI/ML Engineer", "Open Source Contributor", "System Architect", "Problem Solver"],
-    bio: "Passionate software engineer with 5+ years crafting elegant solutions at the intersection of AI, web technologies, and systems architecture. I build products that matter.",
-    location: "San Francisco, CA",
-    email: "alex@alexreid.dev",
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
-    whatsapp: "https://wa.me/1234567890",
-    resume: "#",
-    about: "I'm a software engineer who believes that great technology is invisible — it just works, beautifully. My journey started at MIT where I fell in love with algorithms and distributed systems, then evolved through roles at leading tech companies where I built products used by millions.\n\nToday, I focus on the convergence of AI and human experience, building systems that learn, adapt, and empower. When I'm not coding, I'm contributing to open source, mentoring junior developers, or exploring the mountains of Northern California."
+    name: "Ahmad Al-Zawahrah",
+    title: "Computer Engineer & AI Developer",
+    taglines: ["Developer", "Mobile App Developer", "Network Engineer", "Problem Solver", "AI/ML Engineer"],
+    bio: "Computer Engineer with a passion for continuous learning and adaptation. Skilled in software development, AI, networking, and modern web and mobile technologies.",
+    location: "Zarqa, Jordan",
+    email: "subzero7142856112@gmail.com",
+    github: "https://github.com/subzero7142856112-dotcom",
+    linkedin: "https://www.linkedin.com/in/ahmad-zwahrah-89063229a",
+    whatsapp: "https://wa.me/962776493254",
+    resume: "https://drive.google.com/file/d/1yAootOPL8oGhnzONIp_bgowajD3fOdOd/view?usp=drive_link",
+    about: "I have always believed that success is not measured by what you achieve for yourself, but by the impact you leave behind. As a Computer Engineer, my ambition extends far beyond earning a degree or building software — I aspire to create technology that leaves a lasting mark and contributes to shaping the future.\n\nDriven by curiosity and a relentless desire to grow, I continuously expand my expertise across multiple domains, including Artificial Intelligence, Networking, Web Development, and Mobile Applications. I thrive in dynamic environments, adapt quickly to emerging technologies, and view every challenge as an opportunity to innovate and evolve.\n\nMy ultimate goal is to establish a meaningful presence in the technology world, building solutions, products, and ideas that outlive trends and create real value. I aim to be recognized not only for technical excellence, but for making a lasting contribution that inspires others and leaves a legacy in the ever-evolving digital era."
   },
   stats: [
-    { label: "Projects Completed", value: 47, suffix: "+" },
-    { label: "Certificates Earned", value: 23, suffix: "" },
-    { label: "Technologies", value: 38, suffix: "+" },
-    { label: "Years Experience", value: 5, suffix: "+" },
-    { label: "Freelance Projects", value: 14, suffix: "" }
+    { label: "Projects Completed", value: 27, suffix: "+" },
+    { label: "Certificates Earned", value: 5, suffix: "" },
+    { label: "Technologies", value: 24, suffix: "+" },
+    { label: "Years Experience", value: 3, suffix: "+" },
+    { label: "Freelance Projects", value: 8, suffix: "" }
   ],
   skills: [
-    { id: 1, name: "Python", category: "Programming", years: 5, level: 92, description: "Expert-level Python for backend systems, ML pipelines, and automation.", techs: ["FastAPI", "Django", "NumPy", "Pandas"] },
-    { id: 2, name: "TypeScript", category: "Web Development", years: 4, level: 88, description: "Modern TypeScript for scalable frontend and Node.js applications.", techs: ["React", "Next.js", "Node.js"] },
-    { id: 3, name: "Machine Learning", category: "AI & Machine Learning", years: 3, level: 82, description: "End-to-end ML systems from data preprocessing to model deployment.", techs: ["PyTorch", "TensorFlow", "Scikit-learn", "HuggingFace"] },
-    { id: 4, name: "AWS", category: "Cloud Computing", years: 4, level: 85, description: "Cloud architecture, serverless computing, and infrastructure as code.", techs: ["EC2", "Lambda", "S3", "ECS", "CDK"] },
-    { id: 5, name: "PostgreSQL", category: "Databases", years: 5, level: 90, description: "Advanced query optimization, schema design, and performance tuning.", techs: ["PostGIS", "pgvector", "TimescaleDB"] },
-    { id: 6, name: "Docker & Kubernetes", category: "DevOps", years: 3, level: 80, description: "Container orchestration, CI/CD pipelines, and microservices.", techs: ["Helm", "ArgoCD", "Prometheus", "Grafana"] },
-    { id: 7, name: "Penetration Testing", category: "Cybersecurity", years: 2, level: 72, description: "Web application security, OWASP top 10, and vulnerability assessment.", techs: ["Burp Suite", "Metasploit", "Nmap", "Wireshark"] },
-    { id: 8, name: "React Native", category: "Mobile Development", years: 3, level: 78, description: "Cross-platform mobile applications with native performance.", techs: ["Expo", "React Navigation", "Redux"] },
+    { id: 1, name: "Python", category: "Programming", years: 3, level: 82, description: "Backend development, automation, and AI/ML pipelines.", techs: ["Django", "FastAPI", "NumPy", "Pandas"] },
+    { id: 2, name: "C++", category: "Programming", years: 3, level: 75, description: "Object-oriented programming and system-level development.", techs: ["OOP", "STL", "Algorithms"] },
+    { id: 3, name: "Flutter", category: "Mobile Development", years: 2, level: 78, description: "Cross-platform mobile applications for Android and iOS.", techs: ["Dart", "Firebase", "REST APIs"] },
+    { id: 4, name: "Web Development", category: "Web Development", years: 2, level: 80, description: "Full-stack web development from multiple sources and frameworks.", techs: ["HTML", "CSS", "JavaScript", "React"] },
+    { id: 5, name: "AI & Machine Learning", category: "AI & Machine Learning", years: 2, level: 75, description: "Building and deploying intelligent systems and LLM-based solutions.", techs: ["Python", "TensorFlow", "LLMs", "Prompt Engineering"] },
+    { id: 6, name: "Networking (CCNA)", category: "Networking", years: 2, level: 80, description: "Network design, configuration, and security certified by Cisco.", techs: ["Cisco", "TCP/IP", "Routing", "Switching"] },
+    { id: 7, name: "Cybersecurity", category: "Cybersecurity", years: 2, level: 72, description: "Phishing detection, web security, and system protection.", techs: ["OWASP", "Wireshark", "Nmap", "Python"] },
+    { id: 8, name: "Operating Systems", category: "Tools", years: 2, level: 70, description: "OS fundamentals including process management and memory.", techs: ["Linux", "Windows", "Shell Scripting"] },
   ],
   experiences: [
-    { id: 1, position: "Senior Software Engineer", company: "Anthropic", type: "Full Time", start: "2023-01", end: null, description: "Leading development of AI-powered developer tools and safety systems. Architected a high-throughput inference pipeline serving 10M+ requests/day.", technologies: ["Python", "TypeScript", "Kubernetes", "CUDA", "Redis"], achievements: ["Reduced inference latency by 40%", "Led team of 6 engineers", "Open-sourced 3 internal tools"], location: "San Francisco, CA" },
-    { id: 2, position: "ML Engineer", company: "Stripe", type: "Full Time", start: "2021-03", end: "2022-12", description: "Built fraud detection models and risk scoring systems processing $500B+ in annual transaction volume.", technologies: ["Python", "Spark", "Kafka", "PostgreSQL", "AWS"], achievements: ["Improved fraud detection by 23%", "Reduced false positives by 35%", "Filed 2 patents"], location: "San Francisco, CA" },
-    { id: 3, position: "Full Stack Engineer", company: "Vercel", type: "Contract", start: "2020-06", end: "2021-02", description: "Contributed to the Next.js edge runtime and improved developer experience features.", technologies: ["TypeScript", "Rust", "Next.js", "Turborepo"], achievements: ["Shipped Edge Middleware v1", "Improved DX for 500K+ developers"], location: "Remote" },
+    { id: 1, position: "Technical Committee Member", company: "ELCOM – Hashemite University", type: "Volunteer", start: "2023-01", end: null, description: "Active team member across multiple committees including technical support, development, AI expertise, graduation projects, and AI tools & prompting.", technologies: ["Flutter", "Python", "AI Tools", "Web Dev"], achievements: ["Led multiple technical teams", "Developed mobile app for the committee", "Provided AI workshops and training"], location: "Zarqa, Jordan" },
   ],
   education: [
-    { id: 1, degree: "B.S. Computer Science", university: "MIT", faculty: "School of Engineering", department: "EECS", gpa: "3.94", start: "2016", end: "2020", description: "Specialized in Artificial Intelligence and Distributed Systems. Thesis: 'Efficient Training of Large Language Models on Edge Devices'. Dean's List all semesters." },
+    { id: 1, degree: "B.S. Computer Engineering", university: "Hashemite University", faculty: "Engineering Department", department: "Computer Engineering", gpa: "2.9", start: "2020", end: "2026", description: "Specializing in software development, AI, networking, and mobile technologies. Active member in student technical committees." },
   ],
   projects: [
-    { id: 1, name: "NeuralForge", category: "AI & Machine Learning", description: "Open-source framework for rapid prototyping of neural architectures with automatic differentiation and GPU optimization.", technologies: ["Python", "CUDA", "C++", "PyTorch"], features: ["Auto-differentiation engine", "GPU memory optimization", "Visual architecture builder", "One-click deployment"], status: "Completed", github: "https://github.com", demo: "https://neuralforge.dev", start: "2023-01", end: "2023-08", banner: "" },
-    { id: 2, name: "VaultDB", category: "Databases", description: "Zero-knowledge encrypted database with homomorphic encryption support — query data without ever decrypting it.", technologies: ["Rust", "C", "PostgreSQL", "WebAssembly"], features: ["Homomorphic encryption", "Zero-knowledge proofs", "WASM runtime", "Sub-10ms query latency"], status: "In Progress", github: "https://github.com", demo: "", start: "2023-09", end: null, banner: "" },
-    { id: 3, name: "Meridian", category: "Web Development", description: "Premium design system and component library used by 200+ teams, featuring 120+ accessible components with pixel-perfect design.", technologies: ["TypeScript", "React", "Tailwind", "Storybook", "Figma"], features: ["120+ components", "Dark/light mode", "a11y compliant", "Tree-shakeable"], status: "Completed", github: "https://github.com", demo: "https://meridian.design", start: "2022-03", end: "2022-11", banner: "" },
+    { id: 1, name: "Cybersecurity Platform", category: "Cybersecurity", description: "Phishing attack detection platform built to protect users from malicious web content. Selected as a security system for Hashemite University.", technologies: ["Python", "Machine Learning", "Web Dev", "OWASP"], features: ["Real-time phishing detection", "ML-powered analysis", "University-grade security", "Web dashboard"], status: "Completed", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2024-01", end: "2024-12", banner: "" },
+    { id: 2, name: "Quran Platform", category: "Web Development", description: "A comprehensive online Quran platform with recitation, translation, and learning features.", technologies: ["React", "JavaScript", "CSS", "APIs"], features: ["Full Quran recitation", "Translation support", "Search functionality", "Responsive design"], status: "In Progress", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2024-06", end: null, banner: "" },
+    { id: 3, name: "Marketing Website", category: "Web Development", description: "Professional marketing website built for a client with modern design and full responsiveness.", technologies: ["HTML", "CSS", "JavaScript", "React"], features: ["Modern UI/UX", "Fully responsive", "SEO optimized", "Fast loading"], status: "Completed", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2023-06", end: "2023-09", banner: "" },
   ],
   certs: [
-    { id: 1, name: "AWS Solutions Architect Professional", issuer: "Amazon Web Services", issued: "2023-03", expiry: "2026-03", credId: "SAP-01234", url: "https://aws.amazon.com", image: "" },
-    { id: 2, name: "CKA: Certified Kubernetes Administrator", issuer: "CNCF", issued: "2022-08", expiry: "2025-08", credId: "CKA-5678", url: "https://cncf.io", image: "" },
-    { id: 3, name: "Google Professional ML Engineer", issuer: "Google Cloud", issued: "2023-06", expiry: "2025-06", credId: "GML-9012", url: "https://cloud.google.com", image: "" },
+    { id: 1, name: "CCNA – Cisco Certified Network Associate", issuer: "Cisco", issued: "2023-01", expiry: "", credId: "", url: "", image: "" },
+    { id: 2, name: "Web Design", issuer: "Tournpage (American)", issued: "2022-01", expiry: "", credId: "", url: "", image: "" },
+    { id: 3, name: "Flutter Developer", issuer: "Udemy", issued: "2023-06", expiry: "", credId: "", url: "", image: "" },
+    { id: 4, name: "Large Language Model Systems Expert", issuer: "Hashemite University", issued: "2024-01", expiry: "", credId: "", url: "", image: "" },
+    { id: 5, name: "American Baccalaureate – Computer Engineering", issuer: "Academic", issued: "2020-01", expiry: "", credId: "", url: "", image: "" },
   ],
   achievements: [
-    { id: 1, title: "Best Paper Award – NeurIPS 2023", date: "2023-12", organization: "NeurIPS", description: "Awarded for research on efficient attention mechanisms reducing transformer memory footprint by 60%." },
-    { id: 2, title: "GitHub Arctic Code Vault Contributor", date: "2020-02", organization: "GitHub", description: "Open source contributions preserved in the Arctic Code Vault for 1,000 years." },
-    { id: 3, title: "Hackathon Winner – TechCrunch Disrupt 2022", date: "2022-09", organization: "TechCrunch", description: "1st place among 400+ teams for building an AI-powered accessibility tool in 48 hours." },
+    { id: 1, title: "Winner – Science Day", date: "2026-05-20", organization: "Hashemite University", description: "Won first place at the university Science Day event on 20/5/2026." },
+    { id: 2, title: "Winner – AI Day", date: "2026-05-10", organization: "Hashemite University", description: "Recognized as a winner at the AI Day event on 10/5/2026." },
+    { id: 3, title: "Mobile App Developer – ELCOM Committee", date: "2023-09", organization: "ELCOM – Hashemite University", description: "Core member of the developers team that built the official mobile app for ELCOM committee." },
+    { id: 4, title: "Cybersecurity Platform Adopted by University", date: "2024-12", organization: "Hashemite University", description: "Phishing attack detection platform selected to be used as an official security system at the university." },
+    { id: 5, title: "Team Leader", date: "2023-01", organization: "Multiple Projects", description: "Consistently served as team leader across academic and extracurricular technical projects, leading diverse engineering teams." },
   ],
   courses: [
-    { id: 1, name: "Deep Learning Specialization", provider: "Coursera / DeepLearning.AI", duration: "5 months", completed: "2021-06", skills: ["CNNs", "RNNs", "Transformers", "NLP"] },
-    { id: 2, name: "Advanced Algorithms", provider: "MIT OpenCourseWare", duration: "3 months", completed: "2020-12", skills: ["Graph Theory", "Dynamic Programming", "Computational Geometry"] },
+    { id: 1, name: "Python Programming", provider: "Udemy", duration: "2 months", completed: "2022-06", skills: ["Python", "OOP", "Automation"] },
+    { id: 2, name: "C++ Programming", provider: "Udemy", duration: "2 months", completed: "2022-03", skills: ["C++", "OOP", "Data Structures"] },
+    { id: 3, name: "Flutter Mobile Development", provider: "Udemy", duration: "3 months", completed: "2023-06", skills: ["Flutter", "Dart", "Firebase"] },
+    { id: 4, name: "Web Development", provider: "Multiple Sources", duration: "4 months", completed: "2023-09", skills: ["HTML", "CSS", "JavaScript", "React"] },
+    { id: 5, name: "AI Tools & Prompting", provider: "YouTube & GitHub Communities", duration: "Ongoing", completed: "2024-01", skills: ["LLMs", "Prompt Engineering", "AI Tools"] },
+    { id: 6, name: "Operating Systems", provider: "Hashemite University", duration: "1 semester", completed: "2023-01", skills: ["Linux", "Process Management", "Memory"] },
+    { id: 7, name: "CCNA Networking", provider: "Cisco", duration: "4 months", completed: "2023-01", skills: ["Routing", "Switching", "Network Security"] },
   ],
   freelance: [
-    { id: 1, clientType: "Fintech Startup", name: "Trading Analytics Platform", duration: "6 months", technologies: ["Python", "FastAPI", "React", "PostgreSQL"], description: "Real-time options trading analytics platform with ML-powered signal generation.", deliverables: ["REST API", "Real-time dashboard", "ML models", "Mobile app"], results: "Increased client trading accuracy by 18%. Acquired 5,000 users in first month.", nda: false },
-    { id: 2, clientType: "Healthcare Corp", name: "Medical Image AI System", duration: "4 months", technologies: ["Python", "PyTorch", "DICOM", "Docker"], description: "Computer vision system for automated medical image analysis.", deliverables: ["Trained models", "Inference API", "DICOM integration"], results: "94.2% diagnostic accuracy, reducing radiologist review time by 60%.", nda: true },
+    { id: 1, clientType: "Business Client", name: "Tourism App", duration: "2 months", technologies: ["Flutter", "Dart", "Firebase"], description: "Cross-platform tourism mobile application with location features and listings.", deliverables: ["Android App", "iOS App", "Backend Integration"], results: "Delivered a fully functional tourism app with smooth UX.", nda: false },
+    { id: 2, clientType: "Business Client", name: "Dog Hotel Website", duration: "1 month", technologies: ["HTML", "CSS", "JavaScript"], description: "Professional website for a pet hotel business with booking and gallery features.", deliverables: ["Responsive Website", "Booking Form", "Gallery"], results: "Client launched the site and gained online presence.", nda: false },
+    { id: 3, clientType: "Business Client", name: "Data Entry & Task Management", duration: "Ongoing", technologies: ["Excel", "Python", "Automation"], description: "Data entry automation and task management solutions for business clients.", deliverables: ["Automated Scripts", "Reports", "Data Sheets"], results: "Reduced manual work significantly for clients.", nda: false },
   ]
 };
 
@@ -264,7 +279,7 @@ function Nav({ active, onNav }) {
   return (
     <nav className={`nav${scrolled ? " scrolled" : ""}`}>
       <div className="nav-inner">
-        <a href="#home" onClick={() => go("Home")} className="serif" style={{ fontSize: "1.5rem", fontWeight: 500, color: GOLD, letterSpacing: ".05em", textDecoration: "none" }}>AR</a>
+        <a href="#home" onClick={() => go("Home")} className="serif" style={{ fontSize: "1.5rem", fontWeight: 500, color: GOLD, letterSpacing: ".05em", textDecoration: "none" }}>AZ</a>
         <div className="nav-links-desktop">
           {links.map(l => <a key={l} href={`#${l.toLowerCase()}`} className={`nav-link${active === l.toLowerCase() ? " active" : ""}`} onClick={() => go(l)}>{l}</a>)}
         </div>
@@ -368,14 +383,36 @@ function Hero({ data }) {
           <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div className="hero-ring" style={{ borderRadius: "50%", background: `conic-gradient(${GOLD}, transparent, ${GOLD})`, padding: "2px", animation: "spin 8s linear infinite" }}>
               <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: BG, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                <div className="hero-ring-inner" style={{ borderRadius: "50%", background: `linear-gradient(135deg, #1a1a2e, #16213e)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span className="serif" style={{ fontSize: "clamp(4rem,12vw,6rem)", lineHeight: 1, color: GOLD, opacity: .7 }}>AR</span>
+                <div className="hero-ring-inner" style={{ borderRadius: "50%", background: "#0A0A0A", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg viewBox="0 0 200 200" style={{ width: "72%", height: "72%" }} fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#FFD700"/>
+                        <stop offset="50%" stopColor="#D4AF37"/>
+                        <stop offset="100%" stopColor="#B8860B"/>
+                      </linearGradient>
+                      <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                      </filter>
+                    </defs>
+                    <circle cx="100" cy="100" r="95" stroke="url(#goldGrad)" strokeWidth="1.5" opacity="0.6"/>
+                    <line x1="100" y1="5" x2="100" y2="22" stroke="url(#goldGrad)" strokeWidth="1.5"/>
+                    <line x1="100" y1="178" x2="100" y2="195" stroke="url(#goldGrad)" strokeWidth="1.5"/>
+                    <circle cx="100" cy="28" r="3" fill="url(#goldGrad)" opacity="0.8"/>
+                    <circle cx="100" cy="172" r="3" fill="url(#goldGrad)" opacity="0.8"/>
+                    <g filter="url(#glow)">
+                      <polygon points="45,55 155,55 155,48 130,48 100,35 70,48 45,48" fill="url(#goldGrad)"/>
+                      <polygon points="45,62 45,165 62,165 62,90 90,120 100,132 110,120 138,90 138,165 155,165 155,62 138,62 100,108 62,62" fill="url(#goldGrad)"/>
+                    </g>
+                  </svg>
                 </div>
               </div>
             </div>
-            <div style={{ position: "absolute", bottom: -20, right: -20, background: CARD, border: "1px solid rgba(212,175,55,.2)", borderRadius: 12, padding: ".8rem 1.2rem", minWidth: 140 }}>
-              <div style={{ fontSize: ".7rem", color: TEXT2, marginBottom: ".3rem" }}>Open to Work</div>
-              <div className="mono" style={{ fontSize: ".85rem", color: GOLD }}>Full-time / Contract</div>
+            <div className="otw-badge">
+              <span className="otw-dot" />
+              <span className="otw-text">Open to Work</span>
+              <span className="otw-sub">Full-time · Contract</span>
             </div>
           </div>
         </FadeIn>
