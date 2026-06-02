@@ -899,8 +899,29 @@ function Freelance({ items, isAdmin, onAdd, onDelete }) {
 // ─── Contact ───────────────────────────────────────────────
 function Contact({ profile }) {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
-  const [sent, setSent] = useState(false);
-  const handleSubmit = (e) => { e.preventDefault(); setSent(true); setTimeout(() => setSent(false), 4000); setForm({ name: "", email: "", subject: "", message: "" }); };
+  const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const res = await fetch("https://formspree.io/f/mdavnaqk", {
+        method: "POST",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setForm({ name: "", email: "", subject: "", message: "" });
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 5000);
+      }
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000);
+    }
+  };
   return (
     <section id="contact" style={{ padding: "6rem 2rem", background: BG2 }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
@@ -914,8 +935,8 @@ function Contact({ profile }) {
             <div>
               {[
                 { icon: "✉", label: "Email", value: profile.email, href: `mailto:${profile.email}` },
-                { icon: "💼", label: "LinkedIn", value: "linkedin.com/in/alexreid", href: profile.linkedin },
-                { icon: "🐱", label: "GitHub", value: "github.com/alexreid", href: profile.github },
+                { icon: "💼", label: "LinkedIn", value: "linkedin.com/in/ahmad-zwahrah", href: profile.linkedin },
+                { icon: "🐱", label: "GitHub", value: "github.com/subzero7142856112-dotcom", href: profile.github },
                 { icon: "💬", label: "WhatsApp", value: "Available for quick chats", href: profile.whatsapp },
               ].map(item => (
                 <a key={item.label} href={item.href} target="_blank" rel="noreferrer" style={{ display: "flex", gap: "1rem", alignItems: "center", padding: "1.2rem", marginBottom: "1rem", background: CARD, border: "1px solid rgba(212,175,55,.1)", borderRadius: 12, textDecoration: "none", transition: "all .3s" }}
@@ -950,9 +971,11 @@ function Contact({ profile }) {
                 <label style={{ fontSize: ".75rem", color: GOLD, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: ".4rem" }}>Message</label>
                 <textarea className="input-field" rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} placeholder="Tell me about your project..." required style={{ resize: "vertical" }} />
               </div>
-              <button className="btn-gold" type="submit" style={{ padding: "1rem", borderRadius: 10, fontSize: ".95rem", width: "100%" }}>
-                {sent ? "✓ Message Sent!" : "Send Message →"}
+              <button className="btn-gold" type="submit" disabled={status === "sending"} style={{ padding: "1rem", borderRadius: 10, fontSize: ".95rem", width: "100%", opacity: status === "sending" ? 0.7 : 1, cursor: status === "sending" ? "wait" : "pointer" }}>
+                {status === "sending" ? "Sending..." : status === "sent" ? "✓ Message Sent!" : status === "error" ? "✗ Failed — try again" : "Send Message →"}
               </button>
+              {status === "sent" && <p style={{ color: "#34d399", fontSize: ".85rem", textAlign: "center", marginTop: ".3rem" }}>Thanks! I'll get back to you soon.</p>}
+              {status === "error" && <p style={{ color: "#ef4444", fontSize: ".85rem", textAlign: "center", marginTop: ".3rem" }}>Something went wrong. Please email me directly.</p>}
             </form>
           </FadeIn>
         </div>
