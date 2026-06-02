@@ -73,6 +73,19 @@ section{width:100%;overflow:hidden}
 select.input-field option{background:#111}
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 0;transition:all .4s;border-bottom:1px solid transparent}
 .nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom-color:rgba(212,175,55,.1)}
+@keyframes marquee-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.marquee-section{padding:2.5rem 0;overflow:hidden;position:relative;border-bottom:1px solid rgba(212,175,55,.08)}
+.marquee-section::before,.marquee-section::after{content:'';position:absolute;top:0;bottom:0;width:140px;z-index:2;pointer-events:none}
+.marquee-section::before{left:0;background:linear-gradient(90deg,#0A0A0A 0%,transparent 100%)}
+.marquee-section::after{right:0;background:linear-gradient(270deg,#0A0A0A 0%,transparent 100%)}
+.marquee-track{display:flex;gap:1.2rem;width:max-content;animation:marquee-scroll 30s linear infinite}
+.marquee-section:hover .marquee-track{animation-play-state:paused}
+.marquee-item{display:flex;align-items:center;gap:.6rem;padding:.6rem 1.2rem .6rem .6rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:50px;text-decoration:none;transition:all .3s;flex-shrink:0}
+.marquee-item:hover{border-color:rgba(212,175,55,.3);background:rgba(212,175,55,.05);transform:translateY(-2px)}
+.marquee-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.marquee-label{font-size:.85rem;color:#BFBFBF;font-weight:500;letter-spacing:.03em;white-space:nowrap}
+.marquee-item:hover .marquee-label{color:#D4AF37}
+@media(max-width:768px){.marquee-section::before,.marquee-section::after{width:60px}.marquee-track{animation-duration:22s}}
 @keyframes otw-slide{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes otw-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
 .otw-badge{position:absolute;bottom:-28px;right:-16px;background:rgba(17,17,17,.95);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);border-radius:40px;padding:.55rem 1rem .55rem .75rem;display:flex;align-items:center;gap:.5rem;animation:otw-slide 1s ease 1s both;box-shadow:0 8px 32px rgba(0,0,0,.4)}
@@ -416,6 +429,34 @@ function Hero({ data }) {
             </div>
           </div>
         </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+// ─── Social Marquee ────────────────────────────────────────
+function SocialMarquee({ profile }) {
+  const socials = [
+    { name: "GitHub", color: "#ffffff", bg: "#181717", url: profile.github, icon: "M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2 0 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.3-.5-1.5.2-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3" },
+    { name: "LinkedIn", color: "#ffffff", bg: "#0A66C2", url: profile.linkedin, icon: "M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2M8 19H5v-9h3zM6.5 8.3a1.7 1.7 0 1 1 0-3.5 1.7 1.7 0 0 1 0 3.5M19 19h-3v-4.7c0-1.1 0-2.5-1.5-2.5s-1.8 1.2-1.8 2.4V19h-3v-9h2.9v1.2A3.1 3.1 0 0 1 14 9.7c3 0 3.7 2 3.7 4.6z" },
+    { name: "WhatsApp", color: "#ffffff", bg: "#25D366", url: profile.whatsapp, icon: "M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1l-.8 1c-.2.2-.3.2-.6.1a8 8 0 0 1-2.4-1.5 9 9 0 0 1-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5v-.5L9 6.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5 0-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 5 4.3 1.8.8 2.5.8 3.4.7.5 0 1.7-.7 2-1.4.2-.7.2-1.3.1-1.4zM12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.3A10 10 0 1 0 12 2" },
+    { name: "Email", color: "#ffffff", bg: "#EA4335", url: `mailto:${profile.email}`, icon: "M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0-8 5-8-5zm0 12H4V8l8 5 8-5z" },
+    { name: "Instagram", color: "#ffffff", bg: "linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", url: "#", icon: "M12 2.2c3.2 0 3.6 0 4.9.1 1.2 0 1.8.3 2.2.4.6.2 1 .4 1.4.9.5.4.7.8.9 1.4.1.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.3 1.8-.4 2.2-.2.6-.4 1-.9 1.4-.4.5-.8.7-1.4.9-.4.1-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.3-2.2-.4-.6-.2-1-.4-1.4-.9-.5-.4-.7-.8-.9-1.4-.1-.4-.4-1-.4-2.2-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c0-1.2.3-1.8.4-2.2.2-.6.4-1 .9-1.4.4-.5.8-.7 1.4-.9.4-.1 1-.4 2.2-.4 1.3-.1 1.7-.1 4.9-.1m0 2.2c-3.1 0-3.5 0-4.7.1-1.2 0-1.8.3-2.2.4-.5.2-.9.4-1.3.8s-.6.8-.8 1.3c-.1.4-.4 1-.4 2.2-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c0 1.2.3 1.8.4 2.2.2.5.4.9.8 1.3s.8.6 1.3.8c.4.1 1 .4 2.2.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.2 0 1.8-.3 2.2-.4.5-.2.9-.4 1.3-.8s.6-.8.8-1.3c.1-.4.4-1 .4-2.2.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c0-1.2-.3-1.8-.4-2.2-.2-.5-.4-.9-.8-1.3s-.8-.6-1.3-.8c-.4-.1-1-.4-2.2-.4-1.2-.1-1.6-.1-4.7-.1m0 3.7a5.9 5.9 0 1 0 0 11.8 5.9 5.9 0 0 0 0-11.8m0 9.7a3.8 3.8 0 1 1 0-7.6 3.8 3.8 0 0 1 0 7.6m7.5-9.9a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0" },
+    { name: "Telegram", color: "#ffffff", bg: "#26A5E4", url: "#", icon: "M22 3.4 18.8 20c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-4.9 9-8.1c.4-.3-.1-.5-.6-.2L6.3 13.3l-4.8-1.5c-1-.3-1-1 .2-1.5l18.7-7.2c.9-.3 1.6.2 1.4 1.3z" },
+    { name: "Discord", color: "#ffffff", bg: "#5865F2", url: "#", icon: "M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.4a18.3 18.3 0 0 1 4.3 1.4 18.4 18.4 0 0 0-15-.7A18 18 0 0 1 8.8 3.3L8.6 3a19.8 19.8 0 0 0-4.9 1.4C.6 9 0 13.4.3 17.8a20 20 0 0 0 6 3l.5-.7c-.7-.3-1.4-.6-2-1l.5-.4a14 14 0 0 0 12 0l.5.4c-.6.4-1.3.7-2 1l.5.7a20 20 0 0 0 6-3c.3-5-.6-9.4-2.5-13.4M8.3 15.3c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4-.9 2.4-2.1 2.4m7.4 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4-.9 2.4-2.1 2.4" },
+  ];
+  const doubled = [...socials, ...socials];
+  return (
+    <section className="marquee-section">
+      <div className="marquee-track">
+        {doubled.map((s, i) => (
+          <a key={i} href={s.url} target="_blank" rel="noreferrer" className="marquee-item" title={s.name}>
+            <span className="marquee-icon" style={{ background: s.bg }}>
+              <svg viewBox="0 0 24 24" width="22" height="22" fill={s.color}><path d={s.icon} /></svg>
+            </span>
+            <span className="marquee-label">{s.name}</span>
+          </a>
+        ))}
       </div>
     </section>
   );
@@ -1104,6 +1145,74 @@ function AdminLogin({ onLogin, onClose }) {
   );
 }
 
+// ─── Quick-Add Modals (proper components) ──────────────────
+function AchievementModal({ open, onClose, onSave }) {
+  const blank = { title: "", date: "", organization: "", description: "" };
+  const [f, setF] = useState(blank);
+  useEffect(() => { setF(blank); }, [open]);
+  return (
+    <Modal open={open} onClose={onClose} title="Add Achievement">
+      <FieldRow label="Title"><input className="input-field" value={f.title} onChange={e => setF({ ...f, title: e.target.value })} /></FieldRow>
+      <div className="form-row">
+        <FieldRow label="Date"><input className="input-field" value={f.date} onChange={e => setF({ ...f, date: e.target.value })} placeholder="2024-01" /></FieldRow>
+        <FieldRow label="Organization"><input className="input-field" value={f.organization} onChange={e => setF({ ...f, organization: e.target.value })} /></FieldRow>
+      </div>
+      <FieldRow label="Description"><textarea className="input-field" rows={3} value={f.description} onChange={e => setF({ ...f, description: e.target.value })} /></FieldRow>
+      <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+        <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => onSave({ ...f, id: Date.now() })}>Add Achievement</button>
+        <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={onClose}>Cancel</button>
+      </div>
+    </Modal>
+  );
+}
+
+function CourseModal({ open, onClose, onSave }) {
+  const blank = { name: "", provider: "", duration: "", completed: "", skills: "" };
+  const [f, setF] = useState(blank);
+  useEffect(() => { setF(blank); }, [open]);
+  return (
+    <Modal open={open} onClose={onClose} title="Add Course">
+      <FieldRow label="Course Name"><input className="input-field" value={f.name} onChange={e => setF({ ...f, name: e.target.value })} /></FieldRow>
+      <FieldRow label="Provider"><input className="input-field" value={f.provider} onChange={e => setF({ ...f, provider: e.target.value })} /></FieldRow>
+      <div className="form-row">
+        <FieldRow label="Duration"><input className="input-field" value={f.duration} onChange={e => setF({ ...f, duration: e.target.value })} placeholder="3 months" /></FieldRow>
+        <FieldRow label="Completed"><input className="input-field" value={f.completed} onChange={e => setF({ ...f, completed: e.target.value })} placeholder="2023-06" /></FieldRow>
+      </div>
+      <FieldRow label="Skills (comma-separated)"><input className="input-field" value={f.skills} onChange={e => setF({ ...f, skills: e.target.value })} /></FieldRow>
+      <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+        <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => onSave({ ...f, skills: f.skills.split(",").map(s => s.trim()).filter(Boolean), id: Date.now() })}>Add Course</button>
+        <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={onClose}>Cancel</button>
+      </div>
+    </Modal>
+  );
+}
+
+function FreelanceModal({ open, onClose, onSave }) {
+  const blank = { clientType: "", name: "", duration: "", technologies: "", description: "", results: "", nda: false };
+  const [f, setF] = useState(blank);
+  useEffect(() => { setF(blank); }, [open]);
+  return (
+    <Modal open={open} onClose={onClose} title="Add Freelance Project">
+      <div className="form-row">
+        <FieldRow label="Client Type"><input className="input-field" value={f.clientType} onChange={e => setF({ ...f, clientType: e.target.value })} placeholder="Startup" /></FieldRow>
+        <FieldRow label="Project Name"><input className="input-field" value={f.name} onChange={e => setF({ ...f, name: e.target.value })} /></FieldRow>
+      </div>
+      <FieldRow label="Duration"><input className="input-field" value={f.duration} onChange={e => setF({ ...f, duration: e.target.value })} placeholder="3 months" /></FieldRow>
+      <FieldRow label="Description"><textarea className="input-field" rows={2} value={f.description} onChange={e => setF({ ...f, description: e.target.value })} /></FieldRow>
+      <FieldRow label="Technologies (comma-separated)"><input className="input-field" value={f.technologies} onChange={e => setF({ ...f, technologies: e.target.value })} /></FieldRow>
+      <FieldRow label="Results"><input className="input-field" value={f.results} onChange={e => setF({ ...f, results: e.target.value })} /></FieldRow>
+      <div style={{ display: "flex", gap: ".5rem", alignItems: "center", marginBottom: "1rem" }}>
+        <input type="checkbox" id="nda-add" checked={f.nda} onChange={e => setF({ ...f, nda: e.target.checked })} />
+        <label htmlFor="nda-add" style={{ color: TEXT2, fontSize: ".9rem", cursor: "pointer" }}>NDA Protected</label>
+      </div>
+      <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
+        <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => onSave({ ...f, technologies: f.technologies.split(",").map(t => t.trim()).filter(Boolean), deliverables: [], id: Date.now() })}>Add Project</button>
+        <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={onClose}>Cancel</button>
+      </div>
+    </Modal>
+  );
+}
+
 // ─── Root ──────────────────────────────────────────────────
 export default function Portfolio() {
   const [data, setData] = useState(defaultData);
@@ -1138,6 +1247,7 @@ export default function Portfolio() {
       <Nav active={activeSection} onNav={setActiveSection} />
       <Hero data={data.profile} />
       <Stats data={data.stats} />
+      <SocialMarquee profile={data.profile} />
       <About profile={data.profile} />
       <Skills skills={data.skills} isAdmin={isAdmin}
         onAdd={() => setModal({ type: "skill", item: null })}
@@ -1190,76 +1300,12 @@ export default function Portfolio() {
         onSave={item => { modal?.item ? editItem("projects", item) : addItem("projects", item); closeModal(); }} />
       <CertModal open={modal?.type === "cert"} onClose={closeModal} initial={modal?.item}
         onSave={item => { modal?.item ? editItem("certs", item) : addItem("certs", item); closeModal(); }} />
-
-      {/* Ach quick-add modal */}
-      {modal?.type === "ach" && (
-        <Modal open={true} onClose={closeModal} title="Add Achievement">
-          {(() => {
-            const [f, setF] = useState({ title: "", date: "", organization: "", description: "" });
-            return <>
-              <FieldRow label="Title"><input className="input-field" value={f.title} onChange={e => setF({ ...f, title: e.target.value })} /></FieldRow>
-              <div className="form-row">
-                <FieldRow label="Date"><input className="input-field" value={f.date} onChange={e => setF({ ...f, date: e.target.value })} placeholder="2024-01" /></FieldRow>
-                <FieldRow label="Organization"><input className="input-field" value={f.organization} onChange={e => setF({ ...f, organization: e.target.value })} /></FieldRow>
-              </div>
-              <FieldRow label="Description"><textarea className="input-field" rows={3} value={f.description} onChange={e => setF({ ...f, description: e.target.value })} /></FieldRow>
-              <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
-                <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => { addItem("achievements", { ...f, id: Date.now() }); closeModal(); }}>Add Achievement</button>
-                <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={closeModal}>Cancel</button>
-              </div>
-            </>;
-          })()}
-        </Modal>
-      )}
-
-      {/* Course quick-add */}
-      {modal?.type === "course" && (
-        <Modal open={true} onClose={closeModal} title="Add Course">
-          {(() => {
-            const [f, setF] = useState({ name: "", provider: "", duration: "", completed: "", skills: "" });
-            return <>
-              <FieldRow label="Course Name"><input className="input-field" value={f.name} onChange={e => setF({ ...f, name: e.target.value })} /></FieldRow>
-              <FieldRow label="Provider"><input className="input-field" value={f.provider} onChange={e => setF({ ...f, provider: e.target.value })} /></FieldRow>
-              <div className="form-row">
-                <FieldRow label="Duration"><input className="input-field" value={f.duration} onChange={e => setF({ ...f, duration: e.target.value })} placeholder="3 months" /></FieldRow>
-                <FieldRow label="Completed"><input className="input-field" value={f.completed} onChange={e => setF({ ...f, completed: e.target.value })} placeholder="2023-06" /></FieldRow>
-              </div>
-              <FieldRow label="Skills (comma-separated)"><input className="input-field" value={f.skills} onChange={e => setF({ ...f, skills: e.target.value })} /></FieldRow>
-              <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
-                <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => { addItem("courses", { ...f, skills: f.skills.split(",").map(s => s.trim()).filter(Boolean), id: Date.now() }); closeModal(); }}>Add Course</button>
-                <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={closeModal}>Cancel</button>
-              </div>
-            </>;
-          })()}
-        </Modal>
-      )}
-
-      {/* Freelance quick-add */}
-      {modal?.type === "freelance" && (
-        <Modal open={true} onClose={closeModal} title="Add Freelance Project">
-          {(() => {
-            const [f, setF] = useState({ clientType: "", name: "", duration: "", technologies: "", description: "", deliverables: "", results: "", nda: false });
-            return <>
-              <div className="form-row">
-                <FieldRow label="Client Type"><input className="input-field" value={f.clientType} onChange={e => setF({ ...f, clientType: e.target.value })} placeholder="Startup" /></FieldRow>
-                <FieldRow label="Project Name"><input className="input-field" value={f.name} onChange={e => setF({ ...f, name: e.target.value })} /></FieldRow>
-              </div>
-              <FieldRow label="Duration"><input className="input-field" value={f.duration} onChange={e => setF({ ...f, duration: e.target.value })} placeholder="3 months" /></FieldRow>
-              <FieldRow label="Description"><textarea className="input-field" rows={2} value={f.description} onChange={e => setF({ ...f, description: e.target.value })} /></FieldRow>
-              <FieldRow label="Technologies (comma-separated)"><input className="input-field" value={f.technologies} onChange={e => setF({ ...f, technologies: e.target.value })} /></FieldRow>
-              <FieldRow label="Results"><input className="input-field" value={f.results} onChange={e => setF({ ...f, results: e.target.value })} /></FieldRow>
-              <div style={{ display: "flex", gap: ".5rem", alignItems: "center", marginBottom: "1rem" }}>
-                <input type="checkbox" id="nda" checked={f.nda} onChange={e => setF({ ...f, nda: e.target.checked })} />
-                <label htmlFor="nda" style={{ color: TEXT2, fontSize: ".9rem", cursor: "pointer" }}>NDA Protected</label>
-              </div>
-              <div style={{ display: "flex", gap: ".8rem", marginTop: "1.5rem" }}>
-                <button className="btn-gold" style={{ flex: 1, padding: ".85rem", borderRadius: 10 }} onClick={() => { addItem("freelance", { ...f, technologies: f.technologies.split(",").map(t => t.trim()).filter(Boolean), deliverables: [], id: Date.now() }); closeModal(); }}>Add Project</button>
-                <button className="btn-outline" style={{ padding: ".85rem 1.5rem", borderRadius: 10 }} onClick={closeModal}>Cancel</button>
-              </div>
-            </>;
-          })()}
-        </Modal>
-      )}
+      <AchievementModal open={modal?.type === "ach"} onClose={closeModal}
+        onSave={item => { addItem("achievements", item); closeModal(); }} />
+      <CourseModal open={modal?.type === "course"} onClose={closeModal}
+        onSave={item => { addItem("courses", item); closeModal(); }} />
+      <FreelanceModal open={modal?.type === "freelance"} onClose={closeModal}
+        onSave={item => { addItem("freelance", item); closeModal(); }} />
     </>
   );
 }
