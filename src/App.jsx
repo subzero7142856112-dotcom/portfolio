@@ -73,18 +73,19 @@ select.input-field option{background:#111}
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 0;transition:all .4s;border-bottom:1px solid transparent}
 .nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom-color:rgba(212,175,55,.1)}
 @keyframes marquee-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.marquee-section{padding:2.5rem 0;overflow:hidden;position:relative;border-bottom:1px solid rgba(212,175,55,.08);width:100%;max-width:100%}
-.marquee-section::before,.marquee-section::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
-.marquee-section::before{left:0;background:linear-gradient(90deg,#0A0A0A 0%,transparent 100%)}
-.marquee-section::after{right:0;background:linear-gradient(270deg,#0A0A0A 0%,transparent 100%)}
+.marquee-section{padding:2.5rem 2rem;border-bottom:1px solid rgba(212,175,55,.08);width:100%}
+.marquee-viewport{max-width:1200px;margin:0 auto;overflow:hidden;position:relative;width:100%}
+.marquee-viewport::before,.marquee-viewport::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none}
+.marquee-viewport::before{left:0;background:linear-gradient(90deg,#0A0A0A 0%,transparent 100%)}
+.marquee-viewport::after{right:0;background:linear-gradient(270deg,#0A0A0A 0%,transparent 100%)}
 .marquee-track{display:flex;width:max-content;animation:marquee-scroll 35s linear infinite;will-change:transform}
-.marquee-section:hover .marquee-track{animation-play-state:paused}
+.marquee-viewport:hover .marquee-track{animation-play-state:paused}
 .marquee-item{display:flex;align-items:center;gap:.6rem;padding:.55rem 1.2rem .55rem .55rem;margin:0 .6rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:50px;text-decoration:none;transition:border-color .3s,background .3s,transform .3s;flex-shrink:0}
 .marquee-item:hover{border-color:rgba(212,175,55,.3);background:rgba(212,175,55,.05);transform:translateY(-2px)}
 .marquee-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .marquee-label{font-size:.85rem;color:#BFBFBF;font-weight:500;letter-spacing:.03em;white-space:nowrap}
 .marquee-item:hover .marquee-label{color:#D4AF37}
-@media(max-width:768px){.marquee-section::before,.marquee-section::after{width:50px}.marquee-track{animation-duration:25s}.marquee-item{padding:.5rem 1rem .5rem .5rem;margin:0 .4rem}.marquee-icon{width:32px;height:32px}.marquee-label{font-size:.78rem}}
+@media(max-width:768px){.marquee-section{padding:2rem 1.25rem}.marquee-viewport::before,.marquee-viewport::after{width:40px}.marquee-track{animation-duration:25s}.marquee-item{padding:.5rem 1rem .5rem .5rem;margin:0 .4rem}.marquee-icon{width:32px;height:32px}.marquee-label{font-size:.78rem}}
 @keyframes otw-slide{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes otw-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
 .otw-badge{position:absolute;bottom:-28px;right:-16px;background:rgba(17,17,17,.95);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);border-radius:40px;padding:.55rem 1rem .55rem .75rem;display:flex;align-items:center;gap:.5rem;animation:otw-slide 1s ease 1s both;box-shadow:0 8px 32px rgba(0,0,0,.4)}
@@ -446,15 +447,17 @@ function SocialMarquee({ profile }) {
   const doubled = [...socials, ...socials];
   return (
     <section className="marquee-section">
-      <div className="marquee-track">
-        {doubled.map((s, i) => (
-          <a key={i} href={s.url} target="_blank" rel="noreferrer" className="marquee-item" title={s.name}>
-            <span className="marquee-icon" style={{ background: s.bg }}>
-              <svg viewBox="0 0 24 24" width="22" height="22" fill={s.color}><path d={s.icon} /></svg>
-            </span>
-            <span className="marquee-label">{s.name}</span>
-          </a>
-        ))}
+      <div className="marquee-viewport">
+        <div className="marquee-track">
+          {doubled.map((s, i) => (
+            <a key={i} href={s.url} target="_blank" rel="noreferrer" className="marquee-item" title={s.name}>
+              <span className="marquee-icon" style={{ background: s.bg }}>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill={s.color}><path d={s.icon} /></svg>
+              </span>
+              <span className="marquee-label">{s.name}</span>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );
