@@ -87,15 +87,14 @@ select.input-field option{background:#111}
 .marquee-item:hover .marquee-label{color:#D4AF37}
 @media(max-width:768px){.marquee-section{padding:2rem 1.25rem}.marquee-viewport::before,.marquee-viewport::after{width:40px}.marquee-track{animation-duration:25s}.marquee-item{padding:.5rem 1rem .5rem .5rem;margin:0 .4rem}.marquee-icon{width:32px;height:32px}.marquee-label{font-size:.78rem}}
 @keyframes featured-glow-move{0%,100%{opacity:.5;transform:translate(0,0)}50%{opacity:.9;transform:translate(20px,-10px)}}
-@keyframes beam-spin{to{transform:rotate(1turn)}}
-@keyframes breathe{0%,100%{box-shadow:0 0 40px rgba(212,175,55,.06),0 0 0 1px rgba(212,175,55,.12)}50%{box-shadow:0 0 70px rgba(212,175,55,.16),0 0 0 1px rgba(212,175,55,.3)}}
-.featured-card{position:relative;border-radius:18px;cursor:pointer;padding:1.5px;background:#0f0f0f;transition:transform .4s;animation:breathe 5s ease-in-out infinite;isolation:isolate}
-.featured-card::before{content:'';position:absolute;inset:-150%;z-index:-1;background:conic-gradient(from 0deg,transparent 0%,transparent 82%,#D4AF37 90%,#FFD700 94%,#D4AF37 98%,transparent 100%);animation:beam-spin 6s linear infinite;border-radius:50%}
-.featured-card::after{content:'';position:absolute;inset:1.5px;background:linear-gradient(135deg,#161616 0%,#0f0f0f 100%);border-radius:16.5px;z-index:-1}
+@keyframes beam-spin{to{transform:translate(-50%,-50%) rotate(1turn)}}
+@keyframes breathe{0%,100%{box-shadow:0 0 40px rgba(212,175,55,.05)}50%{box-shadow:0 0 65px rgba(212,175,55,.12)}}
+.featured-card{position:relative;border-radius:18px;cursor:pointer;padding:1.5px;background:rgba(212,175,55,.18);overflow:hidden;transition:transform .4s;animation:breathe 5s ease-in-out infinite}
+.featured-card::before{content:'';position:absolute;top:50%;left:50%;width:180%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:0;background:conic-gradient(from 0deg,transparent 0deg,transparent 300deg,#D4AF37 340deg,#FFD700 350deg,#D4AF37 360deg);animation:beam-spin 5s linear infinite}
 .featured-card:hover{transform:translateY(-4px)}
-.featured-card:hover::before{animation-duration:3s}
-.featured-glow{position:absolute;top:-40%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(212,175,55,.14) 0%,transparent 70%);filter:blur(40px);pointer-events:none;animation:featured-glow-move 6s ease-in-out infinite;border-radius:18px}
-.featured-content{position:relative;padding:2rem;z-index:1;border-radius:16.5px;overflow:hidden}
+.featured-card:hover::before{animation-duration:2.5s}
+.featured-glow{position:absolute;top:-40%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(212,175,55,.12) 0%,transparent 70%);filter:blur(40px);pointer-events:none;animation:featured-glow-move 6s ease-in-out infinite;z-index:0}
+.featured-content{position:relative;padding:2rem;z-index:1;border-radius:16.5px;overflow:hidden;background:linear-gradient(135deg,#161616 0%,#0f0f0f 100%)}
 .featured-badge{background:linear-gradient(135deg,#D4AF37,#FFD700);color:#0A0A0A;font-weight:700;font-size:.72rem;padding:4px 12px;border-radius:50px;letter-spacing:.04em}
 .featured-inner{display:flex;gap:2.5rem;align-items:center}
 .featured-title{font-size:1.6rem;font-weight:700;margin-bottom:.7rem;background:linear-gradient(135deg,#fff,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
@@ -766,13 +765,13 @@ function Projects({ projects, isAdmin, onAdd, onEdit, onDelete }) {
         {featured && featured.caseStudy && (
           <FadeIn>
             <div className="featured-card" onClick={() => setCaseStudy(featured)}>
-              <div className="featured-glow" />
               <div className="featured-content">
-                <div style={{ display: "flex", alignItems: "center", gap: ".6rem", marginBottom: "1rem", flexWrap: "wrap" }}>
+                <div className="featured-glow" />
+                <div style={{ display: "flex", alignItems: "center", gap: ".6rem", marginBottom: "1rem", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
                   <span className="featured-badge">⭐ Featured</span>
                   <span style={{ fontSize: ".75rem", color: TEXT2, letterSpacing: ".04em" }}>{featured.caseStudy.tagline}</span>
                 </div>
-                <div className="featured-inner">
+                <div className="featured-inner" style={{ position: "relative", zIndex: 1 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <h3 className="featured-title">{featured.name}</h3>
                     <p style={{ color: TEXT2, fontSize: ".92rem", lineHeight: 1.7, marginBottom: "1.2rem", maxWidth: 560 }}>{featured.description}</p>
