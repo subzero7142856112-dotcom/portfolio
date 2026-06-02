@@ -59,7 +59,6 @@ section{width:100%;overflow:hidden}
 @keyframes count-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .typewriter{overflow:hidden;white-space:nowrap;border-right:2px solid #D4AF37;animation:typing 2s steps(30,end) forwards,blink .8s infinite}
 .hero-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:pulse-gold 4s ease-in-out infinite}
-.timeline-line{position:absolute;left:50%;transform:translateX(-50%);top:0;bottom:0;width:1px;background:linear-gradient(#D4AF37 0%,transparent 100%)}
 .admin-pill{position:fixed;bottom:2rem;right:2rem;z-index:500;background:rgba(17,17,17,.95);border:1px solid rgba(212,175,55,.3);border-radius:50px;padding:.5rem 1.2rem;cursor:pointer;transition:all .3s;font-size:.8rem;color:#D4AF37;letter-spacing:.06em}
 .admin-pill:hover{border-color:#D4AF37;box-shadow:0 4px 20px rgba(212,175,55,.2)}
 .status-badge{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
@@ -74,18 +73,18 @@ select.input-field option{background:#111}
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 0;transition:all .4s;border-bottom:1px solid transparent}
 .nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom-color:rgba(212,175,55,.1)}
 @keyframes marquee-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.marquee-section{padding:2.5rem 0;overflow:hidden;position:relative;border-bottom:1px solid rgba(212,175,55,.08)}
-.marquee-section::before,.marquee-section::after{content:'';position:absolute;top:0;bottom:0;width:140px;z-index:2;pointer-events:none}
+.marquee-section{padding:2.5rem 0;overflow:hidden;position:relative;border-bottom:1px solid rgba(212,175,55,.08);width:100%;max-width:100%}
+.marquee-section::before,.marquee-section::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
 .marquee-section::before{left:0;background:linear-gradient(90deg,#0A0A0A 0%,transparent 100%)}
 .marquee-section::after{right:0;background:linear-gradient(270deg,#0A0A0A 0%,transparent 100%)}
-.marquee-track{display:flex;gap:1.2rem;width:max-content;animation:marquee-scroll 30s linear infinite}
+.marquee-track{display:flex;width:max-content;animation:marquee-scroll 35s linear infinite;will-change:transform}
 .marquee-section:hover .marquee-track{animation-play-state:paused}
-.marquee-item{display:flex;align-items:center;gap:.6rem;padding:.6rem 1.2rem .6rem .6rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:50px;text-decoration:none;transition:all .3s;flex-shrink:0}
+.marquee-item{display:flex;align-items:center;gap:.6rem;padding:.55rem 1.2rem .55rem .55rem;margin:0 .6rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:50px;text-decoration:none;transition:border-color .3s,background .3s,transform .3s;flex-shrink:0}
 .marquee-item:hover{border-color:rgba(212,175,55,.3);background:rgba(212,175,55,.05);transform:translateY(-2px)}
 .marquee-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .marquee-label{font-size:.85rem;color:#BFBFBF;font-weight:500;letter-spacing:.03em;white-space:nowrap}
 .marquee-item:hover .marquee-label{color:#D4AF37}
-@media(max-width:768px){.marquee-section::before,.marquee-section::after{width:60px}.marquee-track{animation-duration:22s}}
+@media(max-width:768px){.marquee-section::before,.marquee-section::after{width:50px}.marquee-track{animation-duration:25s}.marquee-item{padding:.5rem 1rem .5rem .5rem;margin:0 .4rem}.marquee-icon{width:32px;height:32px}.marquee-label{font-size:.78rem}}
 @keyframes otw-slide{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes otw-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
 .otw-badge{position:absolute;bottom:-28px;right:-16px;background:rgba(17,17,17,.95);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);border-radius:40px;padding:.55rem 1rem .55rem .75rem;display:flex;align-items:center;gap:.5rem;animation:otw-slide 1s ease 1s both;box-shadow:0 8px 32px rgba(0,0,0,.4)}
@@ -109,7 +108,7 @@ select.input-field option{background:#111}
 @media(max-width:900px){
   .split-2{grid-template-columns:1fr;gap:2.5rem}
   .hero-grid{grid-template-columns:1fr;gap:3rem;text-align:center}
-  .hero-grid .hero-btns,.hero-grid .hero-social{justify-content:center}
+  .hero-grid .hero-btns,.hero-grid .hero-social,.hero-grid .hero-typing{justify-content:center}
 }
 @media(max-width:768px){
   .nav-links-desktop{display:none}
@@ -117,7 +116,6 @@ select.input-field option{background:#111}
   .nav-burger{display:block}
   .mobile-menu{display:flex}
   .nav-inner{padding:0 1.25rem}
-  .timeline-line{left:24px}
   .section-title{font-size:2rem}
   .hero-btns{flex-direction:column;align-items:stretch}
   .hero-btns button{width:100%}
@@ -357,9 +355,9 @@ function Hero({ data }) {
             </h1>
           </FadeIn>
           <FadeIn delay={200}>
-            <div style={{ height: "2.5rem", display: "flex", alignItems: "center", gap: "8px", marginBottom: "1.5rem" }}>
+            <div className="hero-typing" style={{ minHeight: "2.5rem", display: "flex", alignItems: "center", gap: "8px", marginBottom: "1.5rem", flexWrap: "wrap" }}>
               <span style={{ color: TEXT2, fontSize: "1.1rem" }}>I'm a </span>
-              <span className="mono" style={{ color: GOLD, fontSize: "1.1rem", borderRight: `2px solid ${GOLD}`, paddingRight: "4px", minWidth: "180px" }}>{displayed}</span>
+              <span className="mono" style={{ color: GOLD, fontSize: "1.1rem", borderRight: `2px solid ${GOLD}`, paddingRight: "4px" }}>{displayed}</span>
             </div>
           </FadeIn>
           <FadeIn delay={300}>
@@ -510,7 +508,7 @@ function About({ profile }) {
               ].map(item => (
                 <div key={item.label} style={{ display: "flex", gap: "1rem", padding: "1rem 1.2rem", background: CARD, border: "1px solid rgba(212,175,55,.1)", borderRadius: 10 }}>
                   <span style={{ color: GOLD, fontSize: ".8rem", textTransform: "uppercase", letterSpacing: ".06em", minWidth: 80 }}>{item.label}</span>
-                  <span style={{ color: TEXT, fontSize: ".9rem" }}>{item.value}</span>
+                  <span style={{ color: TEXT, fontSize: ".9rem", wordBreak: "break-word", minWidth: 0 }}>{item.value}</span>
                 </div>
               ))}
             </div>
@@ -591,12 +589,12 @@ function Experience({ exps, isAdmin, onAdd, onEdit, onDelete }) {
           {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Experience</button>}
         </div></FadeIn>
         <div style={{ position: "relative" }}>
-          <div style={{ position: "absolute", left: "24px", top: 0, bottom: 0, width: "1px", background: "linear-gradient(rgba(212,175,55,.5) 0%, transparent 100%)" }} />
-          <div style={{ display: "flex", flexDirection: "column", gap: "2rem", paddingLeft: "60px" }}>
+          <div style={{ position: "absolute", left: "30px", top: "8px", bottom: "8px", width: "2px", background: "linear-gradient(rgba(212,175,55,.5) 0%, rgba(212,175,55,.1) 100%)" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: "2rem", paddingLeft: "64px" }}>
             {exps.map((exp, i) => (
               <FadeIn key={exp.id} delay={i * 100}>
                 <div style={{ position: "relative" }}>
-                  <div style={{ position: "absolute", left: -48, top: "1.5rem", width: 14, height: 14, borderRadius: "50%", background: BG, border: `2px solid ${GOLD}`, boxShadow: `0 0 12px rgba(212,175,55,.4)` }} />
+                  <div style={{ position: "absolute", left: -40, top: "1.6rem", width: 14, height: 14, borderRadius: "50%", background: BG, border: `2px solid ${GOLD}`, boxShadow: `0 0 12px rgba(212,175,55,.4)`, zIndex: 1 }} />
                   <div className="card" style={{ borderRadius: 14, padding: "1.8rem" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: "1rem" }}>
                       <div>
@@ -923,7 +921,7 @@ function Contact({ profile }) {
                   <span style={{ fontSize: "1.3rem" }}>{item.icon}</span>
                   <div>
                     <div style={{ fontSize: ".8rem", color: GOLD, textTransform: "uppercase", letterSpacing: ".06em" }}>{item.label}</div>
-                    <div style={{ color: TEXT2, fontSize: ".9rem" }}>{item.value}</div>
+                    <div style={{ color: TEXT2, fontSize: ".9rem", wordBreak: "break-word" }}>{item.value}</div>
                   </div>
                 </a>
               ))}
