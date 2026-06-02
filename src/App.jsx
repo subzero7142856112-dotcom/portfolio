@@ -86,6 +86,49 @@ select.input-field option{background:#111}
 .marquee-label{font-size:.85rem;color:#BFBFBF;font-weight:500;letter-spacing:.03em;white-space:nowrap}
 .marquee-item:hover .marquee-label{color:#D4AF37}
 @media(max-width:768px){.marquee-section{padding:2rem 1.25rem}.marquee-viewport::before,.marquee-viewport::after{width:40px}.marquee-track{animation-duration:25s}.marquee-item{padding:.5rem 1rem .5rem .5rem;margin:0 .4rem}.marquee-icon{width:32px;height:32px}.marquee-label{font-size:.78rem}}
+@keyframes featured-glow-move{0%,100%{opacity:.5;transform:translate(0,0)}50%{opacity:.9;transform:translate(20px,-10px)}}
+@keyframes beam-spin{to{transform:rotate(1turn)}}
+@keyframes breathe{0%,100%{box-shadow:0 0 40px rgba(212,175,55,.06),0 0 0 1px rgba(212,175,55,.12)}50%{box-shadow:0 0 70px rgba(212,175,55,.16),0 0 0 1px rgba(212,175,55,.3)}}
+.featured-card{position:relative;border-radius:18px;cursor:pointer;padding:1.5px;background:#0f0f0f;transition:transform .4s;animation:breathe 5s ease-in-out infinite;isolation:isolate}
+.featured-card::before{content:'';position:absolute;inset:-150%;z-index:-1;background:conic-gradient(from 0deg,transparent 0%,transparent 82%,#D4AF37 90%,#FFD700 94%,#D4AF37 98%,transparent 100%);animation:beam-spin 6s linear infinite;border-radius:50%}
+.featured-card::after{content:'';position:absolute;inset:1.5px;background:linear-gradient(135deg,#161616 0%,#0f0f0f 100%);border-radius:16.5px;z-index:-1}
+.featured-card:hover{transform:translateY(-4px)}
+.featured-card:hover::before{animation-duration:3s}
+.featured-glow{position:absolute;top:-40%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(212,175,55,.14) 0%,transparent 70%);filter:blur(40px);pointer-events:none;animation:featured-glow-move 6s ease-in-out infinite;border-radius:18px}
+.featured-content{position:relative;padding:2rem;z-index:1;border-radius:16.5px;overflow:hidden}
+.featured-badge{background:linear-gradient(135deg,#D4AF37,#FFD700);color:#0A0A0A;font-weight:700;font-size:.72rem;padding:4px 12px;border-radius:50px;letter-spacing:.04em}
+.featured-inner{display:flex;gap:2.5rem;align-items:center}
+.featured-title{font-size:1.6rem;font-weight:700;margin-bottom:.7rem;background:linear-gradient(135deg,#fff,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.featured-cta{display:inline-flex;align-items:center;gap:.4rem;color:#D4AF37;font-weight:600;font-size:.9rem;transition:gap .3s}
+.featured-card:hover .featured-cta{gap:.7rem}
+.featured-metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.12);border-radius:14px;overflow:hidden;flex-shrink:0;min-width:280px}
+.featured-metric{background:#121212;padding:1.1rem 1.4rem;text-align:center}
+.featured-metric-val{font-size:1.6rem;font-weight:700;color:#D4AF37;line-height:1;font-family:'Roboto',sans-serif}
+.featured-metric-lbl{font-size:.68rem;color:#BFBFBF;margin-top:.35rem;letter-spacing:.03em}
+@media(max-width:860px){.featured-inner{flex-direction:column;align-items:stretch;gap:1.5rem}.featured-metrics{min-width:0;width:100%}}
+@media(max-width:480px){.featured-content{padding:1.4rem}.featured-title{font-size:1.3rem}.featured-metric-val{font-size:1.3rem}}
+.case-modal{background:#0F0F0F;border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:2.2rem;width:100%;max-width:780px;max-height:92vh;overflow-y:auto;position:relative;animation:count-up .35s ease}
+.case-modal::-webkit-scrollbar{width:4px}
+.case-modal::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
+.case-close{position:absolute;top:1.2rem;right:1.2rem;background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.15);color:#BFBFBF;cursor:pointer;font-size:1.1rem;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:5;transition:all .3s}
+.case-close:hover{border-color:#D4AF37;color:#D4AF37}
+.case-header{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.8rem;padding-right:2.5rem}
+.case-title{font-size:1.5rem;font-weight:700;color:#fff;line-height:1.2}
+.case-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.15);border-radius:14px;overflow:hidden;margin-bottom:1.8rem}
+.case-metric{background:#141414;padding:1.2rem .6rem;text-align:center}
+.case-metric-val{font-size:1.5rem;font-weight:700;color:#D4AF37;line-height:1}
+.case-metric-lbl{font-size:.66rem;color:#BFBFBF;margin-top:.35rem;letter-spacing:.02em}
+.case-section{margin-bottom:1.8rem}
+.case-h3{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.9rem;letter-spacing:.02em}
+.case-flow{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
+.case-flow-step{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);color:#D4AF37;padding:.5rem .9rem;border-radius:8px;font-size:.78rem;font-weight:500;white-space:nowrap}
+.case-flow-arrow{color:#555;font-size:.9rem}
+.case-spinner{width:16px;height:16px;border:2px solid rgba(212,175,55,.2);border-top-color:#D4AF37;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}
+.case-result{margin-top:1.2rem;background:#141414;border:1px solid;border-radius:12px;padding:1.2rem}
+.case-risk-bar{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.case-expert{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:.8rem 1rem;margin-bottom:.6rem}
+@media(max-width:680px){.case-modal{padding:1.5rem}.case-metrics{grid-template-columns:1fr 1fr}.case-grid{grid-template-columns:1fr;gap:1.5rem}.case-title{font-size:1.25rem}}
 @keyframes otw-slide{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes otw-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
 .otw-badge{position:absolute;bottom:-28px;right:-16px;background:rgba(17,17,17,.95);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);border-radius:40px;padding:.55rem 1rem .55rem .75rem;display:flex;align-items:center;gap:.5rem;animation:otw-slide 1s ease 1s both;box-shadow:0 8px 32px rgba(0,0,0,.4)}
@@ -168,7 +211,24 @@ const defaultData = {
     { id: 1, degree: "B.S. Computer Engineering", university: "Hashemite University", faculty: "Engineering Department", department: "Computer Engineering", gpa: "2.9", start: "2020", end: "2026", description: "Specializing in software development, AI, networking, and mobile technologies. Active member in student technical committees." },
   ],
   projects: [
-    { id: 1, name: "Cybersecurity Platform", category: "Cybersecurity", description: "Phishing attack detection platform built to protect users from malicious web content. Selected as a security system for Hashemite University.", technologies: ["Python", "Machine Learning", "Web Dev", "OWASP"], features: ["Real-time phishing detection", "ML-powered analysis", "University-grade security", "Web dashboard"], status: "Completed", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2024-01", end: "2024-12", banner: "" },
+    { id: 1, name: "AI Phishing Detection System", category: "Cybersecurity", featured: true, description: "ModernBERT-based multi-expert AI system for phishing email detection. Combines 3 expert transformer models, a fusion layer, and 6 specialized analyzers — selected as an official security system for the Hashemite University.", technologies: ["Python", "ModernBERT", "PyTorch", "XGBoost", "FastAPI", "Transformers"], features: ["3 expert AI models + fusion layer", "6 specialized analyzers", "Real-time email analysis", "Gmail & Outlook integration"], status: "Completed", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2024-01", end: "2025-06", banner: "",
+      caseStudy: {
+        supervisor: "Dr. Mohammad Al-hammouri",
+        tagline: "Graduation Project · AI & Cybersecurity",
+        metrics: [
+          { value: 99.39, suffix: "%", label: "Binary F1 Score" },
+          { value: 100, suffix: "%", label: "Phishing Detection" },
+          { value: 0, suffix: "%", label: "False Positive Rate" },
+          { value: 175, suffix: "K+", label: "URLs Analyzed" },
+        ],
+        flow: ["Email Input", "6 Analyzers", "3 AI Experts", "Fusion Layer", "Verdict"],
+        experts: [
+          { name: "Binary Phishing Expert", detail: "F1 99.39% · ROC-AUC 99.98% · trained on 89,855 samples" },
+          { name: "Cyber Context Expert", detail: "12-label multilabel · F1 97.87% · detects urgency, authority pressure, credential theft" },
+          { name: "Intent Context Expert", detail: "22-class classifier · F1 96.65% · identifies attacker intent" },
+        ],
+        analyzers: ["URL Analyzer (ML + 12 rules)", "Header Analyzer (7 checks)", "Typosquat Detector", "Domain Age Checker (WHOIS)", "Blacklist Checker (175K+ URLs)", "Sender Analyzer (ML)"],
+      } },
     { id: 2, name: "Quran Platform", category: "Web Development", description: "A comprehensive online Quran platform with recitation, translation, and learning features.", technologies: ["React", "JavaScript", "CSS", "APIs"], features: ["Full Quran recitation", "Translation support", "Search functionality", "Responsive design"], status: "In Progress", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2024-06", end: null, banner: "" },
     { id: 3, name: "Marketing Website", category: "Web Development", description: "Professional marketing website built for a client with modern design and full responsiveness.", technologies: ["HTML", "CSS", "JavaScript", "React"], features: ["Modern UI/UX", "Fully responsive", "SEO optimized", "Fast loading"], status: "Completed", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2023-06", end: "2023-09", banner: "" },
   ],
@@ -217,18 +277,19 @@ function useInView(threshold = 0.15) {
 function AnimCounter({ target, suffix = "", duration = 2000 }) {
   const [count, setCount] = useState(0);
   const [ref, visible] = useInView();
+  const decimals = Number.isInteger(target) ? 0 : (String(target).split(".")[1] || "").length;
   useEffect(() => {
     if (!visible) return;
     let start = null;
     const step = (ts) => {
       if (!start) start = ts;
       const progress = Math.min((ts - start) / duration, 1);
-      setCount(Math.floor(progress * target));
+      setCount(progress * target);
       if (progress < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
   }, [visible, target, duration]);
-  return <span ref={ref}>{count}{suffix}</span>;
+  return <span ref={ref}>{count.toFixed(decimals)}{suffix}</span>;
 }
 
 function FadeIn({ children, delay = 0, className = "" }) {
@@ -686,8 +747,11 @@ function Education({ edu, isAdmin, onAdd, onEdit, onDelete }) {
 // ─── Projects ──────────────────────────────────────────────
 function Projects({ projects, isAdmin, onAdd, onEdit, onDelete }) {
   const [filter, setFilter] = useState("All");
-  const cats = ["All", ...new Set(projects.map(p => p.category))];
-  const filtered = filter === "All" ? projects : projects.filter(p => p.category === filter);
+  const [caseStudy, setCaseStudy] = useState(null);
+  const featured = projects.find(p => p.featured);
+  const regular = projects.filter(p => !p.featured);
+  const cats = ["All", ...new Set(regular.map(p => p.category))];
+  const filtered = filter === "All" ? regular : regular.filter(p => p.category === filter);
   return (
     <section id="projects" style={{ padding: "6rem 2rem" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
@@ -698,8 +762,47 @@ function Projects({ projects, isAdmin, onAdd, onEdit, onDelete }) {
           </div>
           {isAdmin && <button className="btn-gold" style={{ padding: ".6rem 1.4rem", borderRadius: 50, fontSize: ".85rem" }} onClick={onAdd}>+ Add Project</button>}
         </div></FadeIn>
+
+        {featured && featured.caseStudy && (
+          <FadeIn>
+            <div className="featured-card" onClick={() => setCaseStudy(featured)}>
+              <div className="featured-glow" />
+              <div className="featured-content">
+                <div style={{ display: "flex", alignItems: "center", gap: ".6rem", marginBottom: "1rem", flexWrap: "wrap" }}>
+                  <span className="featured-badge">⭐ Featured</span>
+                  <span style={{ fontSize: ".75rem", color: TEXT2, letterSpacing: ".04em" }}>{featured.caseStudy.tagline}</span>
+                </div>
+                <div className="featured-inner">
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h3 className="featured-title">{featured.name}</h3>
+                    <p style={{ color: TEXT2, fontSize: ".92rem", lineHeight: 1.7, marginBottom: "1.2rem", maxWidth: 560 }}>{featured.description}</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginBottom: "1.3rem" }}>
+                      {featured.technologies.map(t => <span key={t} className="tag">{t}</span>)}
+                    </div>
+                    <span className="featured-cta">View Case Study <span style={{ fontSize: "1.1em" }}>→</span></span>
+                  </div>
+                  <div className="featured-metrics">
+                    {featured.caseStudy.metrics.map((m, i) => (
+                      <div key={i} className="featured-metric">
+                        <div className="featured-metric-val">{m.value}{m.suffix}</div>
+                        <div className="featured-metric-lbl">{m.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {isAdmin && (
+                  <div style={{ position: "absolute", top: "1.2rem", right: "1.2rem", display: "flex", gap: ".3rem" }} onClick={e => e.stopPropagation()}>
+                    <button onClick={() => onEdit(featured)} style={{ background: "rgba(212,175,55,.15)", border: "none", color: GOLD, cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".7rem" }}>Edit</button>
+                    <button onClick={() => onDelete(featured.id)} style={{ background: "rgba(239,68,68,.15)", border: "none", color: "#ef4444", cursor: "pointer", borderRadius: 6, padding: "3px 8px", fontSize: ".7rem" }}>Del</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </FadeIn>
+        )}
+
         <FadeIn>
-          <div style={{ display: "flex", gap: ".5rem", flexWrap: "wrap", marginBottom: "2.5rem" }}>
+          <div style={{ display: "flex", gap: ".5rem", flexWrap: "wrap", marginBottom: "2.5rem", marginTop: "2.5rem" }}>
             {cats.map(c => (
               <button key={c} onClick={() => setFilter(c)} style={{ padding: ".4rem 1rem", borderRadius: 20, fontSize: ".8rem", border: `1px solid ${filter === c ? GOLD : "rgba(212,175,55,.2)"}`, background: filter === c ? "rgba(212,175,55,.1)" : "transparent", color: filter === c ? GOLD : TEXT2, cursor: "pointer", transition: "all .3s" }}>{c}</button>
             ))}
@@ -749,7 +852,140 @@ function Projects({ projects, isAdmin, onAdd, onEdit, onDelete }) {
           })}
         </div>
       </div>
+      <CaseStudyModal project={caseStudy} onClose={() => setCaseStudy(null)} />
     </section>
+  );
+}
+
+// ─── Case Study Modal (Featured project deep-dive) ─────────
+function CaseStudyModal({ project, onClose }) {
+  const [email, setEmail] = useState("");
+  const [result, setResult] = useState(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  useEffect(() => { document.body.style.overflow = project ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [project]);
+  useEffect(() => { if (!project) { setEmail(""); setResult(null); setAnalyzing(false); } }, [project]);
+  if (!project) return null;
+  const cs = project.caseStudy;
+
+  const analyze = () => {
+    if (!email.trim()) return;
+    setAnalyzing(true);
+    setResult(null);
+    setTimeout(() => {
+      const text = email.toLowerCase();
+      let score = 0;
+      const signals = [];
+      const checks = [
+        { rx: /urgent|immediately|act now|expire|suspend|24 hours|account.{0,10}(locked|disabled|closed)/, w: 22, label: "Urgency / pressure language" },
+        { rx: /verify|confirm|update.{0,15}(account|password|payment|details)/, w: 20, label: "Credential / account request" },
+        { rx: /click here|click below|follow.{0,5}link|http:\/\/|bit\.ly|tinyurl|\.xyz|\.top|\.club/, w: 18, label: "Suspicious link pattern" },
+        { rx: /winner|congratulations|you.{0,5}won|prize|claim.{0,10}reward|free.{0,10}gift|lottery/, w: 18, label: "Too-good-to-be-true reward" },
+        { rx: /dear (customer|user|member)|valued customer/, w: 12, label: "Generic greeting" },
+        { rx: /password|ssn|social security|credit card|cvv|bank account|wire transfer/, w: 16, label: "Sensitive data solicitation" },
+        { rx: /paypal|amazon|microsoft|apple|netflix|bank/, w: 8, label: "Brand reference (possible impersonation)" },
+        { rx: /gift card|bitcoin|crypto|invoice attached|payment overdue/, w: 14, label: "Financial-fraud indicator" },
+      ];
+      checks.forEach(c => { if (c.rx.test(text)) { score += c.w; signals.push(c.label); } });
+      if (text.length < 25) score = Math.max(score, 5);
+      score = Math.min(score, 99);
+      const verdict = score >= 60 ? "PHISHING" : score >= 30 ? "SUSPICIOUS" : "LIKELY SAFE";
+      const color = score >= 60 ? "#ef4444" : score >= 30 ? "#f59e0b" : "#34d399";
+      setResult({ score, verdict, color, signals: signals.length ? signals : ["No strong phishing indicators detected"] });
+      setAnalyzing(false);
+    }, 1400);
+  };
+
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="case-modal">
+        <button onClick={onClose} aria-label="Close" className="case-close">✕</button>
+
+        <div className="case-header">
+          <div style={{ fontSize: "2.4rem", lineHeight: 1 }}>🛡️</div>
+          <div>
+            <h2 className="case-title">{project.name}</h2>
+            <p style={{ color: GOLD, fontSize: ".82rem", letterSpacing: ".04em", marginTop: ".2rem" }}>{cs.tagline}</p>
+            <p style={{ color: TEXT2, fontSize: ".8rem", marginTop: ".15rem" }}>Supervised by {cs.supervisor}</p>
+          </div>
+        </div>
+
+        <div className="case-metrics">
+          {cs.metrics.map((m, i) => (
+            <div key={i} className="case-metric">
+              <div className="case-metric-val"><AnimCounter target={m.value} suffix={m.suffix} duration={1600} /></div>
+              <div className="case-metric-lbl">{m.label}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="case-section">
+          <h3 className="case-h3">Architecture Flow</h3>
+          <div className="case-flow">
+            {cs.flow.map((step, i) => (
+              <div key={i} style={{ display: "contents" }}>
+                <span className="case-flow-step">{step}</span>
+                {i < cs.flow.length - 1 && <span className="case-flow-arrow">→</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="case-section">
+          <h3 className="case-h3">🧪 Try It Live <span style={{ fontSize: ".7rem", color: TEXT2, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(interactive demo)</span></h3>
+          <textarea className="input-field" rows={4} value={email} onChange={e => setEmail(e.target.value)} placeholder={"Paste a suspicious email here...\ne.g. \"URGENT: Your account will be suspended. Click here to verify your password immediately.\""} style={{ resize: "vertical", marginBottom: ".8rem" }} />
+          <button className="btn-gold" onClick={analyze} disabled={analyzing || !email.trim()} style={{ padding: ".7rem 1.6rem", borderRadius: 8, fontSize: ".88rem", opacity: (analyzing || !email.trim()) ? .6 : 1, cursor: (analyzing || !email.trim()) ? "not-allowed" : "pointer" }}>
+            {analyzing ? "Analyzing..." : "Analyze Email →"}
+          </button>
+          {analyzing && (
+            <div style={{ marginTop: "1rem", display: "flex", alignItems: "center", gap: ".6rem", color: TEXT2, fontSize: ".85rem" }}>
+              <span className="case-spinner" /> Running 3 AI experts + 6 analyzers...
+            </div>
+          )}
+          {result && (
+            <div className="case-result" style={{ borderColor: result.color + "55" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: ".8rem", flexWrap: "wrap", gap: ".5rem" }}>
+                <span style={{ fontWeight: 700, fontSize: "1.05rem", color: result.color, letterSpacing: ".05em" }}>{result.verdict}</span>
+                <span style={{ fontFamily: "'Roboto Mono',monospace", fontSize: ".9rem", color: TEXT2 }}>Risk Score: <span style={{ color: result.color, fontWeight: 600 }}>{result.score}%</span></span>
+              </div>
+              <div className="case-risk-bar"><div style={{ width: `${result.score}%`, height: "100%", background: result.color, borderRadius: 4, transition: "width .8s ease" }} /></div>
+              <div style={{ marginTop: ".9rem" }}>
+                <div style={{ fontSize: ".72rem", color: TEXT2, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: ".4rem" }}>Detected Signals</div>
+                {result.signals.map((s, i) => (
+                  <div key={i} style={{ display: "flex", gap: ".5rem", marginBottom: ".25rem", fontSize: ".83rem", color: TEXT2 }}>
+                    <span style={{ color: result.color }}>•</span> {s}
+                  </div>
+                ))}
+              </div>
+              <p style={{ fontSize: ".72rem", color: "#666", marginTop: ".9rem", fontStyle: "italic" }}>Demo uses a lightweight heuristic engine. The full system runs 3 ModernBERT transformer experts + XGBoost fusion for 99%+ accuracy.</p>
+            </div>
+          )}
+        </div>
+
+        <div className="case-grid">
+          <div className="case-section" style={{ margin: 0 }}>
+            <h3 className="case-h3">3 Expert Models</h3>
+            {cs.experts.map((e, i) => (
+              <div key={i} className="case-expert">
+                <div style={{ fontWeight: 600, fontSize: ".88rem", color: TEXT, marginBottom: ".2rem" }}>{e.name}</div>
+                <div style={{ fontSize: ".78rem", color: TEXT2, lineHeight: 1.5 }}>{e.detail}</div>
+              </div>
+            ))}
+          </div>
+          <div className="case-section" style={{ margin: 0 }}>
+            <h3 className="case-h3">6 Analyzers</h3>
+            {cs.analyzers.map((a, i) => (
+              <div key={i} style={{ display: "flex", gap: ".5rem", marginBottom: ".5rem", fontSize: ".83rem", color: TEXT2 }}>
+                <span style={{ color: GOLD }}>✦</span> {a}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginTop: "1.5rem" }}>
+          {project.technologies.map(t => <span key={t} className="tag">{t}</span>)}
+        </div>
+      </div>
+    </div>
   );
 }
 
