@@ -9,7 +9,7 @@ const TEXT = "#FFFFFF";
 const TEXT2 = "#BFBFBF";
 
 const css = `
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Roboto+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Roboto+Mono:wght@400;500&family=Playfair+Display:wght@500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
 body{background:#0A0A0A;color:#fff;font-family:'Roboto',sans-serif;width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0;text-align:left}
@@ -56,6 +56,7 @@ section{width:100%;overflow:hidden}
 @keyframes typing{from{width:0}to{width:100%}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spin-reverse{to{transform:rotate(-360deg)}}
 @keyframes count-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .typewriter{overflow:hidden;white-space:nowrap;border-right:2px solid #D4AF37;animation:typing 2s steps(30,end) forwards,blink .8s infinite}
 .hero-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:pulse-gold 4s ease-in-out infinite}
@@ -86,6 +87,10 @@ select.input-field option{background:#111}
 .marquee-label{font-size:.85rem;color:#BFBFBF;font-weight:500;letter-spacing:.03em;white-space:nowrap}
 .marquee-item:hover .marquee-label{color:#D4AF37}
 @media(max-width:768px){.marquee-section{padding:2rem 1.25rem}.marquee-viewport::before,.marquee-viewport::after{width:40px}.marquee-track{animation-duration:25s}.marquee-item{padding:.5rem 1rem .5rem .5rem;margin:0 .4rem}.marquee-icon{width:32px;height:32px}.marquee-label{font-size:.78rem}}
+@keyframes aname-in{0%{opacity:0;transform:translateY(28px) rotateX(-45deg)}100%{opacity:1;transform:translateY(0) rotateX(0)}}
+@keyframes aname-wave{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.aname{font-family:'Playfair Display',serif;perspective:600px}
+.aname-letter{display:inline-block;transform-origin:center bottom;animation:aname-in .5s cubic-bezier(.2,.7,.3,1) both var(--intro-delay),aname-wave 2.2s ease-in-out infinite var(--wave-delay)}
 @keyframes fr-spin-cw{to{transform:rotate(360deg)}}
 @keyframes fr-spin-ccw{to{transform:rotate(-360deg)}}
 @keyframes fr-star-drift{0%{transform:translate(0,0);opacity:.3}50%{opacity:1}100%{transform:translate(45px,0);opacity:0}}
@@ -388,7 +393,9 @@ function Nav({ active, onNav }) {
   return (
     <nav className={`nav${scrolled ? " scrolled" : ""}`}>
       <div className="nav-inner">
-        <a href="#home" onClick={() => go("Home")} className="serif" style={{ fontSize: "1.5rem", fontWeight: 500, color: GOLD, letterSpacing: ".05em", textDecoration: "none" }}>AZ</a>
+        <a href="#home" onClick={(e) => { e.preventDefault(); window.location.reload(); }} style={{ display: "flex", alignItems: "center", textDecoration: "none", cursor: "pointer" }} aria-label="Home — reload">
+          <img src="/logo.png" alt="AZ" style={{ height: 42, width: "auto", objectFit: "contain" }} />
+        </a>
         <div className="nav-links-desktop">
           {links.map(l => <a key={l} href={`#${l.toLowerCase()}`} className={`nav-link${active === l.toLowerCase() ? " active" : ""}`} onClick={() => go(l)}>{l}</a>)}
         </div>
@@ -408,6 +415,38 @@ function Nav({ active, onNav }) {
 }
 
 // ─── Hero ──────────────────────────────────────────────────
+// ─── Animated Name (intro 3D + unified infinite wave) ─────
+function AnimatedName({ name }) {
+  const first = name.split(" ")[0];
+  const rest = name.split(" ").slice(1).join(" ");
+  let globalIdx = 0;
+  const renderLine = (text, color, baseDelay) =>
+    text.split("").map((ch, i) => {
+      const introDelay = baseDelay + i * 0.05;
+      const waveDelay = 1.5 - globalIdx * 0.1;
+      globalIdx++;
+      return (
+        <span
+          key={i}
+          className="aname-letter"
+          style={{
+            color,
+            "--intro-delay": `${introDelay}s`,
+            "--wave-delay": `${waveDelay}s`,
+          }}
+        >
+          {ch === " " ? "\u00A0" : ch}
+        </span>
+      );
+    });
+  return (
+    <h1 className="aname" style={{ fontSize: "clamp(3rem,7vw,5.5rem)", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-.02em", marginBottom: ".5rem" }}>
+      <span style={{ display: "block" }}>{renderLine(first, TEXT, 0)}</span>
+      <span style={{ display: "block" }}>{renderLine(rest, GOLD, 0.3)}</span>
+    </h1>
+  );
+}
+
 function Hero({ data }) {
   const [tagIdx, setTagIdx] = useState(0);
   const [displayed, setDisplayed] = useState("");
@@ -447,10 +486,7 @@ function Hero({ data }) {
             </div>
           </FadeIn>
           <FadeIn delay={100}>
-            <h1 className="serif" style={{ fontSize: "clamp(3rem,7vw,5.5rem)", fontWeight: 300, lineHeight: 1.1, letterSpacing: "-.02em", marginBottom: ".5rem" }}>
-              {data.name.split(" ")[0]}<br />
-              <span style={{ color: GOLD }}>{data.name.split(" ").slice(1).join(" ")}</span>
-            </h1>
+            <AnimatedName name={data.name} />
           </FadeIn>
           <FadeIn delay={200}>
             <div className="hero-typing" style={{ minHeight: "2.5rem", display: "flex", alignItems: "center", gap: "8px", marginBottom: "1.5rem", flexWrap: "wrap" }}>
@@ -492,29 +528,8 @@ function Hero({ data }) {
           <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div className="hero-ring" style={{ borderRadius: "50%", background: `conic-gradient(${GOLD}, transparent, ${GOLD})`, padding: "2px", animation: "spin 8s linear infinite" }}>
               <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: BG, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                <div className="hero-ring-inner" style={{ borderRadius: "50%", background: "#0A0A0A", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <svg viewBox="0 0 200 200" style={{ width: "72%", height: "72%" }} fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#FFD700"/>
-                        <stop offset="50%" stopColor="#D4AF37"/>
-                        <stop offset="100%" stopColor="#B8860B"/>
-                      </linearGradient>
-                      <filter id="glow">
-                        <feGaussianBlur stdDeviation="3" result="blur"/>
-                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                      </filter>
-                    </defs>
-                    <circle cx="100" cy="100" r="95" stroke="url(#goldGrad)" strokeWidth="1.5" opacity="0.6"/>
-                    <line x1="100" y1="5" x2="100" y2="22" stroke="url(#goldGrad)" strokeWidth="1.5"/>
-                    <line x1="100" y1="178" x2="100" y2="195" stroke="url(#goldGrad)" strokeWidth="1.5"/>
-                    <circle cx="100" cy="28" r="3" fill="url(#goldGrad)" opacity="0.8"/>
-                    <circle cx="100" cy="172" r="3" fill="url(#goldGrad)" opacity="0.8"/>
-                    <g filter="url(#glow)">
-                      <polygon points="45,55 155,55 155,48 130,48 100,35 70,48 45,48" fill="url(#goldGrad)"/>
-                      <polygon points="45,62 45,165 62,165 62,90 90,120 100,132 110,120 138,90 138,165 155,165 155,62 138,62 100,108 62,62" fill="url(#goldGrad)"/>
-                    </g>
-                  </svg>
+                <div className="hero-ring-inner" style={{ borderRadius: "50%", background: "#0A0A0A", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                  <img src="/logo.png" alt="AZ Logo" style={{ width: "82%", height: "82%", objectFit: "contain", animation: "spin-reverse 8s linear infinite" }} />
                 </div>
               </div>
             </div>
