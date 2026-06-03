@@ -88,9 +88,9 @@ select.input-field option{background:#111}
 .marquee-item:hover .marquee-label{color:#D4AF37}
 @media(max-width:768px){.marquee-section{padding:2rem 1.25rem}.marquee-viewport::before,.marquee-viewport::after{width:40px}.marquee-track{animation-duration:25s}.marquee-item{padding:.5rem 1rem .5rem .5rem;margin:0 .4rem}.marquee-icon{width:32px;height:32px}.marquee-label{font-size:.78rem}}
 @keyframes aname-in{0%{opacity:0;transform:translateY(28px) rotateX(-45deg)}100%{opacity:1;transform:translateY(0) rotateX(0)}}
-@keyframes aname-wave{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.aname{font-family:'Playfair Display',serif;perspective:600px}
-.aname-letter{display:inline-block;transform-origin:center bottom;animation:aname-in .5s cubic-bezier(.2,.7,.3,1) both var(--intro-delay),aname-wave 2.2s ease-in-out infinite var(--wave-delay)}
+@keyframes aname-glow{0%,100%{text-shadow:0 0 14px rgba(212,175,55,.12)}50%{text-shadow:0 0 28px rgba(212,175,55,.4)}}
+.aname{font-family:'Playfair Display',serif;perspective:600px;text-align:left;animation:aname-glow 3.5s ease-in-out infinite}
+.aname-letter{display:inline-block;transform-origin:center bottom;animation:aname-in .5s cubic-bezier(.2,.7,.3,1) both var(--intro-delay)}
 @keyframes fr-spin-cw{to{transform:rotate(360deg)}}
 @keyframes fr-spin-ccw{to{transform:rotate(-360deg)}}
 @keyframes fr-star-drift{0%{transform:translate(0,0);opacity:.3}50%{opacity:1}100%{transform:translate(45px,0);opacity:0}}
@@ -174,7 +174,13 @@ select.input-field option{background:#111}
 .mobile-menu.open{max-height:520px;padding:1.25rem 1.5rem}
 .mobile-link{color:#BFBFBF;text-decoration:none;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.05);transition:color .3s}
 .mobile-link:hover,.mobile-link.active{color:#D4AF37}
-.hero-ring{width:clamp(200px,28vw,260px);height:clamp(200px,28vw,260px)}
+.hero-orbit{position:relative;width:clamp(290px,34vw,340px);height:clamp(290px,34vw,340px);display:flex;align-items:center;justify-content:center}
+.hero-orbit-glow{position:absolute;width:56%;height:56%;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.16),transparent 70%);filter:blur(20px);z-index:0}
+.hero-photo{width:50%;height:50%;border-radius:50%;object-fit:cover;border:1px solid rgba(212,175,55,.5);position:relative;z-index:3;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.hero-orbit-ring{position:absolute;border-radius:50%;border-width:1px;border-style:solid;border-color:transparent;z-index:1}
+.hor1{width:59%;height:59%;border-style:dashed;border-color:rgba(212,175,55,.5);animation:spin 16s linear infinite}
+.hor2{width:75%;height:75%;border-top-color:#D4AF37;border-right-color:rgba(212,175,55,.3);animation:spin-reverse 9s linear infinite}
+.hor3{width:93%;height:93%;border-bottom-color:#FFD700;border-left-color:rgba(255,215,0,.25);animation:spin 13s linear infinite}
 .hero-ring-inner{width:92%;height:92%}
 .hero-avatar-wrap{display:flex;justify-content:center}
 @media(max-width:1024px){.hero-grid{gap:2rem}}
@@ -415,25 +421,18 @@ function Nav({ active, onNav }) {
 }
 
 // ─── Hero ──────────────────────────────────────────────────
-// ─── Animated Name (intro 3D + unified infinite wave) ─────
+// ─── Animated Name (intro 3D + soft glow) ─────────────────
 function AnimatedName({ name }) {
   const first = name.split(" ")[0];
   const rest = name.split(" ").slice(1).join(" ");
-  let globalIdx = 0;
   const renderLine = (text, color, baseDelay) =>
     text.split("").map((ch, i) => {
       const introDelay = baseDelay + i * 0.05;
-      const waveDelay = 1.5 - globalIdx * 0.1;
-      globalIdx++;
       return (
         <span
           key={i}
           className="aname-letter"
-          style={{
-            color,
-            "--intro-delay": `${introDelay}s`,
-            "--wave-delay": `${waveDelay}s`,
-          }}
+          style={{ color, "--intro-delay": `${introDelay}s` }}
         >
           {ch === " " ? "\u00A0" : ch}
         </span>
@@ -525,14 +524,12 @@ function Hero({ data }) {
           </FadeIn>
         </div>
         <FadeIn delay={300} className="hero-avatar-wrap">
-          <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="hero-ring" style={{ borderRadius: "50%", background: `conic-gradient(${GOLD}, transparent, ${GOLD})`, padding: "2px", animation: "spin 8s linear infinite" }}>
-              <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: BG, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                <div className="hero-ring-inner" style={{ borderRadius: "50%", background: "#0A0A0A", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                  <img src="/logo.png" alt="AZ Logo" style={{ width: "82%", height: "82%", objectFit: "contain", animation: "spin-reverse 8s linear infinite" }} />
-                </div>
-              </div>
-            </div>
+          <div className="hero-orbit">
+            <div className="hero-orbit-glow" />
+            <span className="hero-orbit-ring hor1" />
+            <span className="hero-orbit-ring hor2" />
+            <span className="hero-orbit-ring hor3" />
+            <img src="/profile.png" alt="Ahmad Al-Zawahrah" className="hero-photo" />
             <div className="otw-badge">
               <span className="otw-dot" />
               <span className="otw-text">Open to Work</span>
