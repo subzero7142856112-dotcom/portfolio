@@ -86,48 +86,73 @@ select.input-field option{background:#111}
 .marquee-label{font-size:.85rem;color:#BFBFBF;font-weight:500;letter-spacing:.03em;white-space:nowrap}
 .marquee-item:hover .marquee-label{color:#D4AF37}
 @media(max-width:768px){.marquee-section{padding:2rem 1.25rem}.marquee-viewport::before,.marquee-viewport::after{width:40px}.marquee-track{animation-duration:25s}.marquee-item{padding:.5rem 1rem .5rem .5rem;margin:0 .4rem}.marquee-icon{width:32px;height:32px}.marquee-label{font-size:.78rem}}
-@keyframes featured-glow-move{0%,100%{opacity:.5;transform:translate(0,0)}50%{opacity:.9;transform:translate(20px,-10px)}}
-@keyframes beam-spin{to{transform:translate(-50%,-50%) rotate(1turn)}}
-@keyframes breathe{0%,100%{box-shadow:0 0 40px rgba(212,175,55,.05)}50%{box-shadow:0 0 65px rgba(212,175,55,.12)}}
-.featured-card{position:relative;border-radius:18px;cursor:pointer;padding:1.5px;background:rgba(212,175,55,.18);overflow:hidden;transition:transform .4s;animation:breathe 5s ease-in-out infinite}
-.featured-card::before{content:'';position:absolute;top:50%;left:50%;width:180%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:0;background:conic-gradient(from 0deg,transparent 0deg,transparent 300deg,#D4AF37 340deg,#FFD700 350deg,#D4AF37 360deg);animation:beam-spin 5s linear infinite}
+@keyframes fr-spin-cw{to{transform:rotate(360deg)}}
+@keyframes fr-spin-ccw{to{transform:rotate(-360deg)}}
+@keyframes fr-star-drift{0%{transform:translate(0,0);opacity:.3}50%{opacity:1}100%{transform:translate(45px,0);opacity:0}}
+@keyframes fr-card-glow{0%,100%{box-shadow:0 0 18px rgba(212,175,55,.1),0 0 0 1px rgba(212,175,55,.2)}50%{box-shadow:0 0 40px rgba(212,175,55,.28),0 0 0 1px rgba(212,175,55,.5)}}
+.featured-card{position:relative;border-radius:18px;cursor:pointer;border:1px solid rgba(212,175,55,.22);overflow:hidden;transition:transform .4s;background:linear-gradient(135deg,#161616 0%,#0f0f0f 100%);animation:fr-card-glow 4s ease-in-out infinite}
 .featured-card:hover{transform:translateY(-4px)}
-.featured-card:hover::before{animation-duration:2.5s}
-.featured-glow{position:absolute;top:-40%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(212,175,55,.12) 0%,transparent 70%);filter:blur(40px);pointer-events:none;animation:featured-glow-move 6s ease-in-out infinite;z-index:0}
-.featured-content{position:relative;padding:2rem;z-index:1;border-radius:16.5px;overflow:hidden;background:linear-gradient(135deg,#161616 0%,#0f0f0f 100%)}
+.featured-content{position:relative;padding:2rem;z-index:2;border-radius:18px;overflow:hidden}
+.featured-starfield{position:absolute;inset:0;z-index:0;pointer-events:none}
+.featured-star{position:absolute;border-radius:50%;background:#FFD700;box-shadow:0 0 6px 1px rgba(255,215,0,.7),0 0 12px 2px rgba(212,175,55,.4);animation:fr-star-drift linear infinite}
+.featured-ring{position:absolute;border-radius:50%;border:1px solid transparent;z-index:0;pointer-events:none}
+.fr1{top:50%;right:10px;width:340px;height:340px;margin-top:-170px;border-top-color:rgba(212,175,55,.45);border-right-color:rgba(255,215,0,.2);animation:fr-spin-cw 11s linear infinite}
+.fr2{top:50%;right:38px;width:280px;height:280px;margin-top:-140px;border-bottom-color:rgba(212,175,55,.38);border-left-color:rgba(255,215,0,.18);animation:fr-spin-ccw 13s linear infinite}
+.fr3{top:50%;right:66px;width:220px;height:220px;margin-top:-110px;border-top-color:rgba(255,215,0,.4);border-right-color:rgba(212,175,55,.2);animation:fr-spin-cw 9s linear infinite}
+.fr4{top:50%;right:94px;width:160px;height:160px;margin-top:-80px;border-bottom-color:rgba(212,175,55,.35);border-left-color:rgba(255,215,0,.22);animation:fr-spin-ccw 7s linear infinite}
+.fr5{top:50%;right:122px;width:100px;height:100px;margin-top:-50px;border-top-color:rgba(255,215,0,.45);animation:fr-spin-cw 5s linear infinite}
 .featured-badge{background:linear-gradient(135deg,#D4AF37,#FFD700);color:#0A0A0A;font-weight:700;font-size:.72rem;padding:4px 12px;border-radius:50px;letter-spacing:.04em}
 .featured-inner{display:flex;gap:2.5rem;align-items:center}
 .featured-title{font-size:1.6rem;font-weight:700;margin-bottom:.7rem;background:linear-gradient(135deg,#fff,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
 .featured-cta{display:inline-flex;align-items:center;gap:.4rem;color:#D4AF37;font-weight:600;font-size:.9rem;transition:gap .3s}
 .featured-card:hover .featured-cta{gap:.7rem}
-.featured-metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.12);border-radius:14px;overflow:hidden;flex-shrink:0;min-width:280px}
-.featured-metric{background:#121212;padding:1.1rem 1.4rem;text-align:center}
+.featured-metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.12);border-radius:14px;overflow:hidden;flex-shrink:0;min-width:280px;position:relative;z-index:1;backdrop-filter:blur(2px)}
+.featured-metric{background:rgba(18,18,18,.85);padding:1.1rem 1.4rem;text-align:center}
 .featured-metric-val{font-size:1.6rem;font-weight:700;color:#D4AF37;line-height:1;font-family:'Roboto',sans-serif}
 .featured-metric-lbl{font-size:.68rem;color:#BFBFBF;margin-top:.35rem;letter-spacing:.03em}
-@media(max-width:860px){.featured-inner{flex-direction:column;align-items:stretch;gap:1.5rem}.featured-metrics{min-width:0;width:100%}}
+@media(max-width:860px){.featured-inner{flex-direction:column;align-items:stretch;gap:1.5rem}.featured-metrics{min-width:0;width:100%}.featured-ring{display:none}}
 @media(max-width:480px){.featured-content{padding:1.4rem}.featured-title{font-size:1.3rem}.featured-metric-val{font-size:1.3rem}}
 .case-modal{background:#0F0F0F;border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:2.2rem;width:100%;max-width:780px;max-height:92vh;overflow-y:auto;position:relative;animation:count-up .35s ease}
 .case-modal::-webkit-scrollbar{width:4px}
 .case-modal::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
 .case-close{position:absolute;top:1.2rem;right:1.2rem;background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.15);color:#BFBFBF;cursor:pointer;font-size:1.1rem;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:5;transition:all .3s}
 .case-close:hover{border-color:#D4AF37;color:#D4AF37}
-.case-header{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.8rem;padding-right:2.5rem}
-.case-title{font-size:1.5rem;font-weight:700;color:#fff;line-height:1.2}
-.case-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.15);border-radius:14px;overflow:hidden;margin-bottom:1.8rem}
-.case-metric{background:#141414;padding:1.2rem .6rem;text-align:center}
-.case-metric-val{font-size:1.5rem;font-weight:700;color:#D4AF37;line-height:1}
-.case-metric-lbl{font-size:.66rem;color:#BFBFBF;margin-top:.35rem;letter-spacing:.02em}
+.case-hero{position:relative;margin:-2.2rem -2.2rem 1.5rem;padding:2.2rem 2.2rem 1.6rem;overflow:hidden;border-bottom:1px solid rgba(212,175,55,.12);border-radius:18px 18px 0 0}
+@keyframes case-glow-pulse{0%,100%{opacity:.4;transform:translate(0,0)}50%{opacity:.8;transform:translate(-15px,8px)}}
+.case-hero-glow{position:absolute;top:-60%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(212,175,55,.16),transparent 65%);filter:blur(40px);pointer-events:none;animation:case-glow-pulse 6s ease-in-out infinite;z-index:0}
+.case-header{position:relative;z-index:1;display:flex;gap:1.1rem;align-items:flex-start;padding-right:2.5rem}
+.case-icon{font-size:2.6rem;line-height:1;flex-shrink:0;filter:drop-shadow(0 0 14px rgba(212,175,55,.4))}
+.case-badge{display:inline-block;background:linear-gradient(135deg,#D4AF37,#FFD700);color:#0A0A0A;font-weight:700;font-size:.68rem;padding:3px 11px;border-radius:50px;letter-spacing:.04em;margin-bottom:.5rem}
+.case-title{font-size:1.55rem;font-weight:700;color:#fff;line-height:1.2}
+.case-overview{color:#BFBFBF;font-size:.92rem;line-height:1.75;margin-bottom:1.8rem}
+.case-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.2);border-radius:14px;overflow:hidden;margin-bottom:1.8rem}
+.case-metric{background:linear-gradient(160deg,#171717,#121212);padding:1.3rem .6rem;text-align:center;transition:background .3s}
+.case-metric:hover{background:linear-gradient(160deg,#1d1a12,#151207)}
+.case-metric-val{font-size:1.6rem;font-weight:700;color:#D4AF37;line-height:1}
+.case-metric-lbl{font-size:.66rem;color:#BFBFBF;margin-top:.4rem;letter-spacing:.02em}
 .case-section{margin-bottom:1.8rem}
-.case-h3{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.9rem;letter-spacing:.02em}
+.case-h3{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.9rem;letter-spacing:.02em;display:flex;align-items:center;gap:.5rem}
+.case-h3::before{content:'';width:3px;height:14px;background:linear-gradient(#D4AF37,#FFD700);border-radius:2px;display:inline-block}
+.case-highlights{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.case-highlight{display:flex;gap:.7rem;align-items:flex-start;background:rgba(255,255,255,.02);border:1px solid rgba(212,175,55,.1);border-radius:12px;padding:.9rem 1rem;transition:border-color .3s,transform .3s}
+.case-highlight:hover{border-color:rgba(212,175,55,.3);transform:translateY(-2px)}
+.case-highlight-icon{font-size:1.4rem;line-height:1;flex-shrink:0}
+.case-highlight-title{font-weight:600;font-size:.85rem;color:#D4AF37;margin-bottom:.2rem}
+.case-highlight-text{font-size:.76rem;color:#BFBFBF;line-height:1.5}
 .case-flow{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
-.case-flow-step{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);color:#D4AF37;padding:.5rem .9rem;border-radius:8px;font-size:.78rem;font-weight:500;white-space:nowrap}
-.case-flow-arrow{color:#555;font-size:.9rem}
-.case-spinner{width:16px;height:16px;border:2px solid rgba(212,175,55,.2);border-top-color:#D4AF37;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}
-.case-result{margin-top:1.2rem;background:#141414;border:1px solid;border-radius:12px;padding:1.2rem}
-.case-risk-bar{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.case-flow-step{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.25);color:#D4AF37;padding:.55rem 1rem;border-radius:8px;font-size:.78rem;font-weight:500;white-space:nowrap;transition:all .3s}
+.case-flow-step:hover{background:rgba(212,175,55,.16);transform:translateY(-2px)}
+.case-flow-arrow{color:#D4AF37;font-size:.9rem;opacity:.5}
 .case-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
-.case-expert{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:.8rem 1rem;margin-bottom:.6rem}
-@media(max-width:680px){.case-modal{padding:1.5rem}.case-metrics{grid-template-columns:1fr 1fr}.case-grid{grid-template-columns:1fr;gap:1.5rem}.case-title{font-size:1.25rem}}
+.case-expert{background:rgba(255,255,255,.02);border:1px solid rgba(212,175,55,.08);border-radius:10px;padding:.9rem 1rem;margin-bottom:.6rem;transition:border-color .3s}
+.case-expert:hover{border-color:rgba(212,175,55,.25)}
+.case-expert-name{display:flex;align-items:center;gap:.5rem;font-weight:600;font-size:.86rem;color:#fff;margin-bottom:.3rem}
+.case-expert-num{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#FFD700);color:#0A0A0A;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.case-analyzer{display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem;font-size:.82rem;color:#BFBFBF;padding:.4rem 0}
+.case-stack-row{display:flex;gap:1rem;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.case-stack-label{flex-shrink:0;width:90px;font-size:.78rem;color:#D4AF37;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.case-stack-items{font-size:.82rem;color:#BFBFBF;line-height:1.5}
+@media(max-width:680px){.case-modal{padding:1.5rem}.case-hero{margin:-1.5rem -1.5rem 1.3rem;padding:1.5rem 1.5rem 1.3rem}.case-metrics{grid-template-columns:1fr 1fr}.case-highlights{grid-template-columns:1fr}.case-grid{grid-template-columns:1fr;gap:1.5rem}.case-title{font-size:1.3rem}}
 @keyframes otw-slide{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes otw-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
 .otw-badge{position:absolute;bottom:-28px;right:-16px;background:rgba(17,17,17,.95);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);border-radius:40px;padding:.55rem 1rem .55rem .75rem;display:flex;align-items:center;gap:.5rem;animation:otw-slide 1s ease 1s both;box-shadow:0 8px 32px rgba(0,0,0,.4)}
@@ -214,19 +239,31 @@ const defaultData = {
       caseStudy: {
         supervisor: "Dr. Mohammad Al-hammouri",
         tagline: "Graduation Project · AI & Cybersecurity",
+        overview: "An end-to-end intelligent email security system that detects phishing attacks in real time. Built on ModernBERT transformer architecture, it combines three specialized expert models with a fusion layer and six rule-based analyzers — achieving near-perfect accuracy and zero false positives. The system was officially selected to protect the Hashemite University's email infrastructure.",
         metrics: [
           { value: 99.39, suffix: "%", label: "Binary F1 Score" },
           { value: 100, suffix: "%", label: "Phishing Detection" },
           { value: 0, suffix: "%", label: "False Positive Rate" },
           { value: 175, suffix: "K+", label: "URLs Analyzed" },
         ],
+        highlights: [
+          { icon: "🎯", title: "99.98% ROC-AUC", text: "Near-perfect discrimination between phishing and legitimate emails." },
+          { icon: "🏛️", title: "University Deployed", text: "Adopted as an official security system at Hashemite University." },
+          { icon: "⚡", title: "Real-Time Analysis", text: "Sub-second verdicts on incoming emails via FastAPI backend." },
+          { icon: "🔗", title: "Inbox Integration", text: "Native Gmail & Outlook integration with OAuth 2.0 + PKCE." },
+        ],
         flow: ["Email Input", "6 Analyzers", "3 AI Experts", "Fusion Layer", "Verdict"],
         experts: [
-          { name: "Binary Phishing Expert", detail: "F1 99.39% · ROC-AUC 99.98% · trained on 89,855 samples" },
-          { name: "Cyber Context Expert", detail: "12-label multilabel · F1 97.87% · detects urgency, authority pressure, credential theft" },
-          { name: "Intent Context Expert", detail: "22-class classifier · F1 96.65% · identifies attacker intent" },
+          { name: "Binary Phishing Expert", detail: "F1 99.39% · ROC-AUC 99.98% · trained on 89,855 labeled samples" },
+          { name: "Cyber Context Expert", detail: "12-label multilabel · F1 97.87% · detects urgency, authority pressure & credential theft" },
+          { name: "Intent Context Expert", detail: "22-class classifier · F1 96.65% · identifies the attacker's underlying intent" },
         ],
-        analyzers: ["URL Analyzer (ML + 12 rules)", "Header Analyzer (7 checks)", "Typosquat Detector", "Domain Age Checker (WHOIS)", "Blacklist Checker (175K+ URLs)", "Sender Analyzer (ML)"],
+        analyzers: ["URL Analyzer (ML + 12 heuristic rules)", "Header Analyzer (7 forensic checks)", "Typosquat Detector", "Domain Age Checker (WHOIS)", "Blacklist Checker (175K+ URLs)", "Sender Reputation (ML)"],
+        stack: [
+          { label: "AI / ML", items: "ModernBERT · PyTorch · Transformers · XGBoost" },
+          { label: "Backend", items: "Python · FastAPI · WHOIS · OAuth 2.0 + PKCE" },
+          { label: "Data", items: "89,855 training samples · 175K+ URL blacklist" },
+        ],
       } },
     { id: 2, name: "Quran Platform", category: "Web Development", description: "A comprehensive online Quran platform with recitation, translation, and learning features.", technologies: ["React", "JavaScript", "CSS", "APIs"], features: ["Full Quran recitation", "Translation support", "Search functionality", "Responsive design"], status: "In Progress", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2024-06", end: null, banner: "" },
     { id: 3, name: "Marketing Website", category: "Web Development", description: "Professional marketing website built for a client with modern design and full responsiveness.", technologies: ["HTML", "CSS", "JavaScript", "React"], features: ["Modern UI/UX", "Fully responsive", "SEO optimized", "Fast loading"], status: "Completed", github: "https://github.com/subzero7142856112-dotcom", demo: "", start: "2023-06", end: "2023-09", banner: "" },
@@ -747,7 +784,26 @@ function Education({ edu, isAdmin, onAdd, onEdit, onDelete }) {
 function Projects({ projects, isAdmin, onAdd, onEdit, onDelete }) {
   const [filter, setFilter] = useState("All");
   const [caseStudy, setCaseStudy] = useState(null);
+  const starRef = useRef(null);
   const featured = projects.find(p => p.featured);
+  useEffect(() => {
+    const field = starRef.current;
+    if (!field || !featured) return;
+    field.innerHTML = "";
+    for (let i = 0; i < 26; i++) {
+      const s = document.createElement("span");
+      s.className = "featured-star";
+      s.style.left = (Math.random() * 100) + "%";
+      s.style.top = (Math.random() * 100) + "%";
+      const sz = 2 + Math.random() * 2;
+      s.style.width = sz + "px";
+      s.style.height = sz + "px";
+      const dur = 1.5 + Math.random() * 1;
+      s.style.animationDuration = dur + "s";
+      s.style.animationDelay = (-Math.random() * dur) + "s";
+      field.appendChild(s);
+    }
+  }, [featured]);
   const regular = projects.filter(p => !p.featured);
   const cats = ["All", ...new Set(regular.map(p => p.category))];
   const filtered = filter === "All" ? regular : regular.filter(p => p.category === filter);
@@ -766,7 +822,12 @@ function Projects({ projects, isAdmin, onAdd, onEdit, onDelete }) {
           <FadeIn>
             <div className="featured-card" onClick={() => setCaseStudy(featured)}>
               <div className="featured-content">
-                <div className="featured-glow" />
+                <div className="featured-starfield" ref={starRef} />
+                <span className="featured-ring fr1" />
+                <span className="featured-ring fr2" />
+                <span className="featured-ring fr3" />
+                <span className="featured-ring fr4" />
+                <span className="featured-ring fr5" />
                 <div style={{ display: "flex", alignItems: "center", gap: ".6rem", marginBottom: "1rem", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
                   <span className="featured-badge">⭐ Featured</span>
                   <span style={{ fontSize: ".75rem", color: TEXT2, letterSpacing: ".04em" }}>{featured.caseStudy.tagline}</span>
@@ -858,55 +919,29 @@ function Projects({ projects, isAdmin, onAdd, onEdit, onDelete }) {
 
 // ─── Case Study Modal (Featured project deep-dive) ─────────
 function CaseStudyModal({ project, onClose }) {
-  const [email, setEmail] = useState("");
-  const [result, setResult] = useState(null);
-  const [analyzing, setAnalyzing] = useState(false);
   useEffect(() => { document.body.style.overflow = project ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [project]);
-  useEffect(() => { if (!project) { setEmail(""); setResult(null); setAnalyzing(false); } }, [project]);
   if (!project) return null;
   const cs = project.caseStudy;
-
-  const analyze = () => {
-    if (!email.trim()) return;
-    setAnalyzing(true);
-    setResult(null);
-    setTimeout(() => {
-      const text = email.toLowerCase();
-      let score = 0;
-      const signals = [];
-      const checks = [
-        { rx: /urgent|immediately|act now|expire|suspend|24 hours|account.{0,10}(locked|disabled|closed)/, w: 22, label: "Urgency / pressure language" },
-        { rx: /verify|confirm|update.{0,15}(account|password|payment|details)/, w: 20, label: "Credential / account request" },
-        { rx: /click here|click below|follow.{0,5}link|http:\/\/|bit\.ly|tinyurl|\.xyz|\.top|\.club/, w: 18, label: "Suspicious link pattern" },
-        { rx: /winner|congratulations|you.{0,5}won|prize|claim.{0,10}reward|free.{0,10}gift|lottery/, w: 18, label: "Too-good-to-be-true reward" },
-        { rx: /dear (customer|user|member)|valued customer/, w: 12, label: "Generic greeting" },
-        { rx: /password|ssn|social security|credit card|cvv|bank account|wire transfer/, w: 16, label: "Sensitive data solicitation" },
-        { rx: /paypal|amazon|microsoft|apple|netflix|bank/, w: 8, label: "Brand reference (possible impersonation)" },
-        { rx: /gift card|bitcoin|crypto|invoice attached|payment overdue/, w: 14, label: "Financial-fraud indicator" },
-      ];
-      checks.forEach(c => { if (c.rx.test(text)) { score += c.w; signals.push(c.label); } });
-      if (text.length < 25) score = Math.max(score, 5);
-      score = Math.min(score, 99);
-      const verdict = score >= 60 ? "PHISHING" : score >= 30 ? "SUSPICIOUS" : "LIKELY SAFE";
-      const color = score >= 60 ? "#ef4444" : score >= 30 ? "#f59e0b" : "#34d399";
-      setResult({ score, verdict, color, signals: signals.length ? signals : ["No strong phishing indicators detected"] });
-      setAnalyzing(false);
-    }, 1400);
-  };
 
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="case-modal">
         <button onClick={onClose} aria-label="Close" className="case-close">✕</button>
 
-        <div className="case-header">
-          <div style={{ fontSize: "2.4rem", lineHeight: 1 }}>🛡️</div>
-          <div>
-            <h2 className="case-title">{project.name}</h2>
-            <p style={{ color: GOLD, fontSize: ".82rem", letterSpacing: ".04em", marginTop: ".2rem" }}>{cs.tagline}</p>
-            <p style={{ color: TEXT2, fontSize: ".8rem", marginTop: ".15rem" }}>Supervised by {cs.supervisor}</p>
+        <div className="case-hero">
+          <div className="case-hero-glow" />
+          <div className="case-header">
+            <div className="case-icon">🛡️</div>
+            <div>
+              <span className="case-badge">⭐ Graduation Project</span>
+              <h2 className="case-title">{project.name}</h2>
+              <p style={{ color: GOLD, fontSize: ".82rem", letterSpacing: ".04em", marginTop: ".3rem" }}>{cs.tagline}</p>
+              <p style={{ color: TEXT2, fontSize: ".8rem", marginTop: ".15rem" }}>Supervised by {cs.supervisor}</p>
+            </div>
           </div>
         </div>
+
+        <p className="case-overview">{cs.overview}</p>
 
         <div className="case-metrics">
           {cs.metrics.map((m, i) => (
@@ -918,7 +953,22 @@ function CaseStudyModal({ project, onClose }) {
         </div>
 
         <div className="case-section">
-          <h3 className="case-h3">Architecture Flow</h3>
+          <h3 className="case-h3">Key Highlights</h3>
+          <div className="case-highlights">
+            {cs.highlights.map((h, i) => (
+              <div key={i} className="case-highlight">
+                <div className="case-highlight-icon">{h.icon}</div>
+                <div>
+                  <div className="case-highlight-title">{h.title}</div>
+                  <div className="case-highlight-text">{h.text}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="case-section">
+          <h3 className="case-h3">How It Works</h3>
           <div className="case-flow">
             {cs.flow.map((step, i) => (
               <div key={i} style={{ display: "contents" }}>
@@ -929,60 +979,41 @@ function CaseStudyModal({ project, onClose }) {
           </div>
         </div>
 
-        <div className="case-section">
-          <h3 className="case-h3">🧪 Try It Live <span style={{ fontSize: ".7rem", color: TEXT2, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(interactive demo)</span></h3>
-          <textarea className="input-field" rows={4} value={email} onChange={e => setEmail(e.target.value)} placeholder={"Paste a suspicious email here...\ne.g. \"URGENT: Your account will be suspended. Click here to verify your password immediately.\""} style={{ resize: "vertical", marginBottom: ".8rem" }} />
-          <button className="btn-gold" onClick={analyze} disabled={analyzing || !email.trim()} style={{ padding: ".7rem 1.6rem", borderRadius: 8, fontSize: ".88rem", opacity: (analyzing || !email.trim()) ? .6 : 1, cursor: (analyzing || !email.trim()) ? "not-allowed" : "pointer" }}>
-            {analyzing ? "Analyzing..." : "Analyze Email →"}
-          </button>
-          {analyzing && (
-            <div style={{ marginTop: "1rem", display: "flex", alignItems: "center", gap: ".6rem", color: TEXT2, fontSize: ".85rem" }}>
-              <span className="case-spinner" /> Running 3 AI experts + 6 analyzers...
-            </div>
-          )}
-          {result && (
-            <div className="case-result" style={{ borderColor: result.color + "55" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: ".8rem", flexWrap: "wrap", gap: ".5rem" }}>
-                <span style={{ fontWeight: 700, fontSize: "1.05rem", color: result.color, letterSpacing: ".05em" }}>{result.verdict}</span>
-                <span style={{ fontFamily: "'Roboto Mono',monospace", fontSize: ".9rem", color: TEXT2 }}>Risk Score: <span style={{ color: result.color, fontWeight: 600 }}>{result.score}%</span></span>
-              </div>
-              <div className="case-risk-bar"><div style={{ width: `${result.score}%`, height: "100%", background: result.color, borderRadius: 4, transition: "width .8s ease" }} /></div>
-              <div style={{ marginTop: ".9rem" }}>
-                <div style={{ fontSize: ".72rem", color: TEXT2, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: ".4rem" }}>Detected Signals</div>
-                {result.signals.map((s, i) => (
-                  <div key={i} style={{ display: "flex", gap: ".5rem", marginBottom: ".25rem", fontSize: ".83rem", color: TEXT2 }}>
-                    <span style={{ color: result.color }}>•</span> {s}
-                  </div>
-                ))}
-              </div>
-              <p style={{ fontSize: ".72rem", color: "#666", marginTop: ".9rem", fontStyle: "italic" }}>Demo uses a lightweight heuristic engine. The full system runs 3 ModernBERT transformer experts + XGBoost fusion for 99%+ accuracy.</p>
-            </div>
-          )}
-        </div>
-
         <div className="case-grid">
           <div className="case-section" style={{ margin: 0 }}>
             <h3 className="case-h3">3 Expert Models</h3>
             {cs.experts.map((e, i) => (
               <div key={i} className="case-expert">
-                <div style={{ fontWeight: 600, fontSize: ".88rem", color: TEXT, marginBottom: ".2rem" }}>{e.name}</div>
+                <div className="case-expert-name"><span className="case-expert-num">{i + 1}</span>{e.name}</div>
                 <div style={{ fontSize: ".78rem", color: TEXT2, lineHeight: 1.5 }}>{e.detail}</div>
               </div>
             ))}
           </div>
           <div className="case-section" style={{ margin: 0 }}>
-            <h3 className="case-h3">6 Analyzers</h3>
+            <h3 className="case-h3">6 Specialized Analyzers</h3>
             {cs.analyzers.map((a, i) => (
-              <div key={i} style={{ display: "flex", gap: ".5rem", marginBottom: ".5rem", fontSize: ".83rem", color: TEXT2 }}>
+              <div key={i} className="case-analyzer">
                 <span style={{ color: GOLD }}>✦</span> {a}
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginTop: "1.5rem" }}>
-          {project.technologies.map(t => <span key={t} className="tag">{t}</span>)}
+        <div className="case-section">
+          <h3 className="case-h3">Tech Stack</h3>
+          {cs.stack.map((s, i) => (
+            <div key={i} className="case-stack-row">
+              <span className="case-stack-label">{s.label}</span>
+              <span className="case-stack-items">{s.items}</span>
+            </div>
+          ))}
         </div>
+
+        {project.github && (
+          <a href={project.github} target="_blank" rel="noreferrer" className="btn-gold" style={{ display: "inline-flex", alignItems: "center", gap: ".5rem", padding: ".75rem 1.6rem", borderRadius: 8, fontSize: ".88rem", textDecoration: "none", marginTop: ".5rem" }}>
+            View on GitHub →
+          </a>
+        )}
       </div>
     </div>
   );
