@@ -160,7 +160,7 @@ select.input-field option{background:#111}
 @media(max-width:680px){.case-modal{padding:1.5rem}.case-hero{margin:-1.5rem -1.5rem 1.3rem;padding:1.5rem 1.5rem 1.3rem}.case-metrics{grid-template-columns:1fr 1fr}.case-highlights{grid-template-columns:1fr}.case-grid{grid-template-columns:1fr;gap:1.5rem}.case-title{font-size:1.3rem}}
 @keyframes otw-slide{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes otw-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
-.otw-badge{position:absolute;bottom:-28px;right:-16px;background:rgba(17,17,17,.95);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);border-radius:40px;padding:.55rem 1rem .55rem .75rem;display:flex;align-items:center;gap:.5rem;animation:otw-slide 1s ease 1s both;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.otw-badge{position:absolute;bottom:-40px;right:25px;background:rgba(17,17,17,.95);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);border-radius:40px;padding:.55rem 1rem .55rem .75rem;display:flex;align-items:center;gap:.5rem;animation:otw-slide 1s ease 1s both;box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .otw-dot{width:8px;height:8px;border-radius:50%;background:#34d399;flex-shrink:0;animation:otw-pulse 2s ease infinite}
 .otw-text{font-size:.72rem;font-weight:600;color:#D4AF37;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 .otw-sub{font-size:.65rem;color:#666;white-space:nowrap;font-family:'Roboto Mono',monospace}
@@ -176,11 +176,11 @@ select.input-field option{background:#111}
 .mobile-link:hover,.mobile-link.active{color:#D4AF37}
 .hero-orbit{position:relative;width:clamp(290px,34vw,340px);height:clamp(290px,34vw,340px);display:flex;align-items:center;justify-content:center}
 .hero-orbit-glow{position:absolute;width:56%;height:56%;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.16),transparent 70%);filter:blur(20px);z-index:0}
-.hero-photo{width:50%;height:50%;border-radius:50%;object-fit:cover;border:1px solid rgba(212,175,55,.5);position:relative;z-index:3;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.hero-photo{width:70%;height:70%;border-radius:50%;object-fit:cover;border:1px solid rgba(212,175,55,.5);position:relative;z-index:3;}
 .hero-orbit-ring{position:absolute;border-radius:50%;border-width:1px;border-style:solid;border-color:transparent;z-index:1}
-.hor1{width:59%;height:59%;border-style:dashed;border-color:rgba(212,175,55,.5);animation:spin 16s linear infinite}
-.hor2{width:75%;height:75%;border-top-color:#D4AF37;border-right-color:rgba(212,175,55,.3);animation:spin-reverse 9s linear infinite}
-.hor3{width:93%;height:93%;border-bottom-color:#FFD700;border-left-color:rgba(255,215,0,.25);animation:spin 13s linear infinite}
+.hor1{width:60%;height:60%;border-style:dashed;border-color:rgba(212,175,55,.5);animation:spin 16s linear infinite}
+.hor2{width:80%;height:80%;border-top-color:#D4AF37;border-right-color:rgba(212,175,55,.3);animation:spin-reverse 9s linear infinite}
+.hor3{width:90%;height:90%;border-bottom-color:#FFD700;border-left-color:rgba(255,215,0,.25);animation:spin 10s linear infinite}
 .hero-ring-inner{width:92%;height:92%}
 .hero-avatar-wrap{display:flex;justify-content:center}
 @media(max-width:1024px){.hero-grid{gap:2rem}}
@@ -400,7 +400,7 @@ function Nav({ active, onNav }) {
     <nav className={`nav${scrolled ? " scrolled" : ""}`}>
       <div className="nav-inner">
         <a href="#home" onClick={(e) => { e.preventDefault(); window.location.reload(); }} style={{ display: "flex", alignItems: "center", textDecoration: "none", cursor: "pointer" }} aria-label="Home — reload">
-          <img src="/logo.png" alt="AZ" style={{ height: 42, width: "auto", objectFit: "contain" }} />
+          <img src="/logo.png" alt="AZ" style={{ height: 35, width: "auto", objectFit: "contain" }} />
         </a>
         <div className="nav-links-desktop">
           {links.map(l => <a key={l} href={`#${l.toLowerCase()}`} className={`nav-link${active === l.toLowerCase() ? " active" : ""}`} onClick={() => go(l)}>{l}</a>)}
